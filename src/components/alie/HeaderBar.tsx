@@ -67,52 +67,34 @@ export function HeaderBar() {
   return (
     <>
       <header className="sticky top-0 z-30 border-b border-border/70 bg-card/85 backdrop-blur-md">
-        <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-2 sm:px-6">
-          {/* Brand identity with living avatar */}
+        <div className="flex items-center justify-between gap-3 px-4 py-2.5 sm:px-6">
+          {/* Brand identity */}
           <Link
             to="/"
             className="flex items-center gap-2.5 transition-opacity hover:opacity-85"
             title="Back to home"
           >
-            <AlieAvatar size="sm" persona="cozy" status={agentStatus} showEmojiBadge={true} />
-            <div className="flex flex-col">
+            <AlieAvatar size="sm" status={agentStatus} />
+            <div className="flex items-center gap-2">
               <span className="font-serif text-base font-bold tracking-tight text-foreground leading-none">
                 Alie
               </span>
-              <span className="text-[0.65rem] text-muted-foreground font-medium">
-                Personal Companion
-              </span>
+              {agentStatus !== "idle" && (
+                <span className="inline-flex items-center gap-1 text-[0.7rem] text-muted-foreground font-sans">
+                  <span className={cn("size-1.5 rounded-full", status.dotClass)} />
+                  <span className="hidden sm:inline">{status.label}</span>
+                </span>
+              )}
             </div>
           </Link>
 
-          {/* Center: Cozy Companion Identity & Status Indicator */}
-          <div className="order-3 flex items-center justify-center gap-2 sm:order-2">
-            <div className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 dark:bg-amber-500/15 px-3 py-1 text-xs font-medium text-amber-800 dark:text-amber-200 shadow-2xs backdrop-blur-md">
-              <span className="text-xs">☕</span>
-              <span className="font-serif font-medium tracking-tight">Cozy Companion</span>
-              <span className="text-amber-600/70 dark:text-amber-300/70 text-[10px] hidden sm:inline">
-                · Warm & Thoughtful
-              </span>
-            </div>
-            <div
-              className={cn(
-                "hidden sm:inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[0.7rem] font-medium transition-colors",
-                status.badgeClass,
-              )}
-            >
-              {status.icon}
-              <span className={cn("size-1.5 rounded-full", status.dotClass)} />
-              <span>{status.label}</span>
-            </div>
-          </div>
-
           {/* Right: Controls + Theme Toggle */}
-          <div className="order-2 flex items-center gap-2 sm:order-3">
+          <div className="flex items-center gap-2">
             {/* New Chat Button */}
             <button
               type="button"
               onClick={newChat}
-              className="flex items-center gap-1 rounded-md border border-border/80 bg-card px-2.5 py-1.5 sm:py-1 text-xs font-medium text-foreground transition-colors hover:bg-muted active:scale-95 shadow-xs"
+              className="flex items-center gap-1 rounded-md border border-border/80 bg-card px-2.5 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-muted active:scale-95 shadow-2xs"
               title="Start a new chat"
             >
               <Plus className="size-3.5" />
@@ -123,14 +105,14 @@ export function HeaderBar() {
             <button
               type="button"
               onClick={() => setOpenHistory(true)}
-              className="flex items-center gap-1.5 rounded-md border border-border/80 bg-card px-2.5 py-1.5 sm:py-1 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:scale-95 shadow-xs"
+              className="flex items-center gap-1.5 rounded-md border border-border/80 bg-card px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:scale-95 shadow-2xs"
               title="View past chats"
             >
               <Clock className="size-3.5" />
               <span className="hidden sm:inline">History</span>
             </button>
 
-            {/* Theme Toggle Button (Light/Dark Mode) - Far Right */}
+            {/* Theme Toggle Button (Light/Dark Mode) */}
             <ThemeToggle />
           </div>
         </div>

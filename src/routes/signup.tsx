@@ -26,10 +26,19 @@ function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [agreed, setAgreed] = useState(true);
 
+  const handleProceedToApp = () => {
+    try {
+      sessionStorage.setItem("alie.app_entered", "true");
+    } catch {
+      /* ignore */
+    }
+    navigate({ to: "/app" });
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Non-functional mock registration for now, smoothly transitions to /app
-    navigate({ to: "/app" });
+    handleProceedToApp();
   };
 
   return (
@@ -194,7 +203,7 @@ function SignupPage() {
             <div className="grid grid-cols-2 gap-2.5">
               <button
                 type="button"
-                onClick={() => navigate({ to: "/app" })}
+                onClick={handleProceedToApp}
                 className="flex items-center justify-center gap-2 rounded-md border border-border/80 bg-card px-3 py-2 text-xs font-medium text-foreground transition-colors hover:bg-muted active:scale-[0.98]"
               >
                 <svg className="size-4" viewBox="0 0 24 24">
@@ -220,7 +229,7 @@ function SignupPage() {
 
               <button
                 type="button"
-                onClick={() => navigate({ to: "/app" })}
+                onClick={handleProceedToApp}
                 className="flex items-center justify-center gap-2 rounded-md border border-border/80 bg-card px-3 py-2 text-xs font-medium text-foreground transition-colors hover:bg-muted active:scale-[0.98]"
               >
                 <svg className="size-4 fill-current" viewBox="0 0 24 24">

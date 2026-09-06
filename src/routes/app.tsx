@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { ListTodo, MessageSquare } from "lucide-react";
 
 import { ConversationPanel } from "@/components/alie/ConversationPanel";
@@ -10,6 +10,20 @@ import { AlieProvider, useAlie } from "@/lib/alie/store";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/app")({
+  beforeLoad: () => {
+    if (typeof window !== "undefined") {
+      try {
+        const entered = sessionStorage.getItem("alie.app_entered");
+        if (!entered) {
+          throw redirect({ to: "/" });
+        }
+      } catch (e) {
+        if (e && typeof e === "object" && "to" in e) {
+          throw e;
+        }
+      }
+    }
+  },
   head: () => ({
     meta: [
       { title: "Alie" },
@@ -24,9 +38,21 @@ export const Route = createFileRoute("/app")({
 });
 
 function MainLayout() {
+  const navigate = useNavigate();
   const [mobileTab, setMobileTab] = useState<"chat" | "tasks">("chat");
   const { tasks } = useAlie();
   const openTasksCount = tasks.filter((t) => t.status === "open").length;
+
+  useEffect(() => {
+    try {
+      const entered = sessionStorage.getItem("alie.app_entered");
+      if (!entered) {
+        navigate({ to: "/", replace: true });
+      }
+    } catch {
+      /* ignore */
+    }
+  }, [navigate]);
 
   return (
     <main className="flex h-dvh flex-col bg-background text-foreground overflow-hidden">

@@ -1,13 +1,11 @@
 import { useState } from "react";
 import {
-  Calendar,
   Check,
   CheckCircle2,
   ChevronDown,
   ChevronRight,
   ClipboardList,
   FileText,
-  HelpCircle,
   MessageSquare,
   Mic,
   MicOff,
@@ -39,7 +37,6 @@ import {
   ToolInput,
   ToolOutput,
 } from "@/components/ai-elements/tool";
-import { getGreetingForHour, getPersonaConfig, type PersonaMode } from "@/lib/alie/persona";
 import { useAlie } from "@/lib/alie/store";
 import type { ChatMessage, ToolExecution } from "@/lib/alie/types";
 import { cn } from "@/lib/utils";
@@ -65,7 +62,7 @@ function SimpleToolCard({ tool }: { tool: ToolExecution }) {
         };
       case "taskManager":
         return {
-          title: "Checked your to-do items",
+          title: "Updated your to-dos",
           icon: <ClipboardList className="size-3.5 text-emerald-500" />,
         };
       default:
@@ -79,7 +76,7 @@ function SimpleToolCard({ tool }: { tool: ToolExecution }) {
   const meta = getToolMeta();
 
   return (
-    <div className="my-1.5 overflow-hidden rounded-md border border-border/70 bg-card/60 text-xs shadow-xs">
+    <div className="my-1.5 overflow-hidden rounded-md border border-border/70 bg-card/60 text-xs shadow-2xs">
       <div
         className="flex cursor-pointer items-center justify-between gap-3 px-3 py-2 hover:bg-muted/40 transition-colors"
         onClick={() => setExpanded(!expanded)}
@@ -141,50 +138,23 @@ function SimpleToolCard({ tool }: { tool: ToolExecution }) {
   );
 }
 
-function Turn({
-  message,
-  viewMode,
-  currentPersona,
-}: {
-  message: ChatMessage;
-  viewMode: "simple" | "developer";
-  currentPersona: PersonaMode;
-}) {
+function Turn({ message, viewMode }: { message: ChatMessage; viewMode: "simple" | "developer" }) {
   const isUser = message.role === "user";
-  const personaMode = message.persona ?? currentPersona;
-  const personaConfig = getPersonaConfig(personaMode);
 
   return (
-    <Message from={message.role} className="max-w-full gap-2">
+    <Message from={message.role} className="max-w-full gap-1.5">
       {/* Turn Header */}
       <div
         className={cn(
-          "flex items-center gap-2 text-xs text-muted-foreground",
+          "flex items-center gap-2 text-xs text-muted-foreground px-1",
           isUser && "justify-end",
         )}
       >
-        {!isUser && (
-          <AlieAvatar size="xs" persona={personaMode} status="idle" showEmojiBadge={false} />
-        )}
-        <div className="flex items-center gap-1.5">
-          <span className="font-medium text-foreground">
-            {isUser ? (message.transcribed ? "You (voice)" : "You") : "Alie"}
-          </span>
-          {!isUser && (
-            <span
-              className={cn(
-                "inline-flex items-center gap-1 rounded-full border px-1.5 py-0.2 text-[0.62rem] font-medium",
-                personaConfig.accentBg,
-                personaConfig.accentBorder,
-                personaConfig.accentText,
-              )}
-            >
-              <span>{personaConfig.emoji}</span>
-              <span>{personaConfig.shortName}</span>
-            </span>
-          )}
-        </div>
-        <span className="text-[0.68rem] opacity-60">{clock(message.timestamp)}</span>
+        {!isUser && <AlieAvatar size="xs" status="idle" />}
+        <span className="font-medium text-foreground">
+          {isUser ? (message.transcribed ? "You (voice)" : "You") : "Alie"}
+        </span>
+        <span className="text-[0.68rem] opacity-50">{clock(message.timestamp)}</span>
       </div>
 
       {/* Tool Calls */}
@@ -220,10 +190,10 @@ function Turn({
       {message.content ? (
         <MessageContent
           className={cn(
-            "rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-xs transition-all",
+            "rounded-xl px-4 py-2.5 text-sm leading-relaxed transition-all",
             isUser
-              ? "bg-amber-600 dark:bg-amber-500 text-white ml-auto max-w-[85%] font-medium"
-              : "border border-amber-500/20 bg-card/95 text-card-foreground mr-auto max-w-[95%] shadow-xs",
+              ? "bg-foreground text-background ml-auto max-w-[85%] font-normal shadow-2xs"
+              : "border border-border/80 bg-card text-foreground mr-auto max-w-[92%] shadow-2xs",
           )}
         >
           {isUser ? (
@@ -258,15 +228,10 @@ export function ConversationPanel() {
     stopTalking,
     muted,
     toggleMuted,
-    persona,
-    setPersona,
   } = useAlie();
   const [draft, setDraft] = useState("");
   const busy = agentStatus === "thinking" || agentStatus === "executing_tool";
   const offline = connection !== "connected";
-
-  const personaConfig = getPersonaConfig(persona);
-  const timeGreeting = getGreetingForHour(persona);
 
   const currentSession = chatHistory.find((s) => s.id === activeSessionId);
   const currentTitle = currentSession?.title || "Conversation";
@@ -377,100 +342,32 @@ export function ConversationPanel() {
 
       {/* Messages Scroll Area */}
       <Conversation className="min-h-0 flex-1">
-        <ConversationContent className="gap-4 p-4 sm:p-5">
+        <ConversationContent className="gap-4 p-4 sm:p-6">
           {messages.length === 0 ? (
-            <div className="relative flex flex-col items-center justify-center py-10 sm:py-16 text-center max-w-xl mx-auto px-4">
-              {/* Subtle warm ambient hearth glow halo */}
-              <div className="absolute -top-10 size-80 rounded-full bg-amber-500/10 dark:bg-amber-400/10 blur-3xl pointer-events-none -z-10 animate-hearth-glow" />
-
-              {/* Living Alie Avatar with warm presence */}
-              <div className="mb-4">
-                <AlieAvatar size="xl" persona="cozy" status={agentStatus} showEmojiBadge={true} />
+            <div className="flex flex-1 flex-col items-center justify-center py-20 text-center max-w-md mx-auto px-4">
+              <div className="mb-5">
+                <AlieAvatar size="lg" status={agentStatus} />
               </div>
 
-              {/* Friendly Sanctuary Tag */}
-              <div className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 dark:bg-amber-500/15 px-3.5 py-1 text-xs font-medium text-amber-800 dark:text-amber-200 shadow-2xs mb-3 backdrop-blur-sm">
-                <span>☕</span>
-                <span className="font-serif">Cozy Sanctuary</span>
-                <span className="opacity-60 hidden sm:inline">· Warm, patient & private</span>
-              </div>
-
-              {/* Time-of-day Contextual Greeting in serif */}
-              <p className="font-serif text-sm text-amber-800/80 dark:text-amber-300/80 mb-2 italic">
-                "{timeGreeting}"
-              </p>
-
-              {/* Warm Editorial Headline */}
-              <h2 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-foreground max-w-lg leading-snug">
-                Make yourself at home. How can I support your day?
+              <h2 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+                What's on your mind today?
               </h2>
-              <p className="mt-2.5 max-w-md text-xs sm:text-sm leading-relaxed text-muted-foreground">
-                Grab a warm cup of coffee or tea. I’m right here to listen, shape a gentle plan, or
-                just keep you company.
+              <p className="mt-2 text-xs sm:text-sm leading-relaxed text-muted-foreground">
+                Talk through thoughts, organize tasks, or capture notes.
               </p>
-
-              {/* Thoughtful Conversation Starters (Styled like tactile stationery cards) */}
-              <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-lg text-left">
-                {personaConfig.promptSuggestions.map((s, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    disabled={offline}
-                    onClick={() => sendText(s.prompt)}
-                    className="group relative flex items-start gap-3 rounded-2xl border border-amber-500/20 bg-card/90 p-3.5 shadow-2xs transition-all duration-200 hover:border-amber-500/40 hover:bg-card hover:shadow-xs active:scale-98 disabled:opacity-50"
-                  >
-                    <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 text-base group-hover:scale-110 transition-transform">
-                      {s.emoji}
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <p className="font-medium text-xs text-foreground group-hover:text-amber-800 dark:group-hover:text-amber-200 transition-colors">
-                        {s.label}
-                      </p>
-                      <p className="mt-0.5 text-[0.72rem] text-muted-foreground line-clamp-2 leading-relaxed">
-                        {s.prompt}
-                      </p>
-                    </div>
-                  </button>
-                ))}
-              </div>
             </div>
           ) : (
-            messages.map((m) => (
-              <Turn key={m.id} message={m} viewMode={viewMode} currentPersona={persona} />
-            ))
+            messages.map((m) => <Turn key={m.id} message={m} viewMode={viewMode} />)
           )}
 
           {busy && (
-            <div className="flex items-center gap-2 rounded-md border border-border/70 bg-card px-3 py-2 text-xs text-muted-foreground w-fit shadow-xs">
+            <div className="flex items-center gap-2 rounded-md border border-border/70 bg-card px-3 py-1.5 text-xs text-muted-foreground w-fit shadow-2xs">
               <span className="flex items-center gap-1">
-                <span
-                  className={cn(
-                    "size-1.5 rounded-full animate-pulse [animation-delay:-0.3s]",
-                    persona === "cozy" && "bg-amber-500",
-                    persona === "candid" && "bg-violet-500",
-                    persona === "zen" && "bg-emerald-500",
-                  )}
-                />
-                <span
-                  className={cn(
-                    "size-1.5 rounded-full animate-pulse [animation-delay:-0.15s]",
-                    persona === "cozy" && "bg-amber-500",
-                    persona === "candid" && "bg-violet-500",
-                    persona === "zen" && "bg-emerald-500",
-                  )}
-                />
-                <span
-                  className={cn(
-                    "size-1.5 rounded-full animate-pulse",
-                    persona === "cozy" && "bg-amber-500",
-                    persona === "candid" && "bg-violet-500",
-                    persona === "zen" && "bg-emerald-500",
-                  )}
-                />
+                <span className="size-1.5 rounded-full bg-foreground/50 animate-pulse [animation-delay:-0.3s]" />
+                <span className="size-1.5 rounded-full bg-foreground/50 animate-pulse [animation-delay:-0.15s]" />
+                <span className="size-1.5 rounded-full bg-foreground/50 animate-pulse" />
               </span>
-              <span className="text-[0.72rem] font-medium text-foreground ml-1">
-                {personaConfig.statusQuips.thinking}
-              </span>
+              <span className="text-[0.72rem] font-medium text-foreground ml-1">Thinking...</span>
             </div>
           )}
         </ConversationContent>
@@ -480,7 +377,7 @@ export function ConversationPanel() {
       {/* Input Section */}
       <div className="shrink-0 border-t border-border/70 bg-card/40 p-3 sm:p-4 backdrop-blur-sm">
         <PromptInput
-          className="rounded-2xl border border-amber-500/30 bg-card shadow-xs transition-all focus-within:border-amber-500/60 focus-within:ring-2 focus-within:ring-amber-500/15"
+          className="rounded-xl border border-border/80 bg-card shadow-2xs transition-all focus-within:border-foreground/30 focus-within:ring-1 focus-within:ring-foreground/10"
           onSubmit={(_, event) => {
             event.preventDefault();
             if (!draft.trim()) return;
@@ -495,28 +392,28 @@ export function ConversationPanel() {
               offline
                 ? "Connecting to Alie..."
                 : recording
-                  ? "Listening warmly... speak freely"
-                  : "Share what's on your mind, ask for a gentle plan, or tap Voice... ☕"
+                  ? "Listening..."
+                  : "Message Alie or tap Voice to speak..."
             }
             disabled={offline}
             className="text-base sm:text-sm font-sans placeholder:text-muted-foreground/60"
           />
 
-          {/* Live Voice Recording Waveform Bar (active while recording) */}
+          {/* Live Voice Recording Bar (active while recording) */}
           {recording && (
-            <div className="flex items-center gap-2 border-t border-amber-500/20 bg-amber-500/10 px-3.5 py-2 text-xs text-amber-900 dark:text-amber-100">
-              <span className="size-2 rounded-full bg-amber-500 animate-pulse" />
-              <span className="text-[0.68rem] font-medium font-serif">Listening to you...</span>
+            <div className="flex items-center gap-2 border-t border-border/70 bg-muted/40 px-3.5 py-2 text-xs text-foreground">
+              <span className="size-2 rounded-full bg-signal animate-pulse" />
+              <span className="text-[0.68rem] font-medium">Recording voice...</span>
               <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted">
                 <div
-                  className="h-full rounded-full bg-amber-500 transition-[width] duration-75"
+                  className="h-full rounded-full bg-signal transition-[width] duration-75"
                   style={{ width: `${Math.min(100, Math.max(12, Math.round(micLevel * 160)))}%` }}
                 />
               </div>
               <button
                 type="button"
                 onClick={stopTalking}
-                className="rounded-lg bg-amber-600 dark:bg-amber-500 px-2.5 py-0.5 text-[0.68rem] font-medium text-white hover:opacity-90 active:scale-95"
+                className="rounded-md bg-foreground px-2.5 py-1 text-[0.68rem] font-medium text-background hover:opacity-90 active:scale-95"
               >
                 Send voice
               </button>
@@ -540,10 +437,10 @@ export function ConversationPanel() {
                 disabled={offline}
                 onClick={toggleTalking}
                 className={cn(
-                  "flex items-center gap-1.5 rounded-xl px-3 py-1.5 sm:px-2.5 sm:py-1 text-xs font-medium transition-all active:scale-95",
+                  "flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium transition-all active:scale-95",
                   recording
-                    ? "bg-amber-600 text-white animate-pulse shadow-xs"
-                    : "border border-amber-500/30 text-amber-900 dark:text-amber-100 hover:bg-amber-500/10",
+                    ? "bg-signal text-signal-foreground shadow-2xs"
+                    : "border border-border/80 text-muted-foreground hover:text-foreground hover:bg-muted",
                   offline && "cursor-not-allowed opacity-50",
                 )}
                 title={recording ? "Stop and send voice recording" : "Voice input (Speak to Alie)"}
@@ -552,7 +449,7 @@ export function ConversationPanel() {
                 {recording ? (
                   <>
                     <Square className="size-3 fill-current" />
-                    <span className="text-[0.72rem]">Stop & Send</span>
+                    <span className="text-[0.72rem]">Stop</span>
                   </>
                 ) : (
                   <>
@@ -568,7 +465,7 @@ export function ConversationPanel() {
                 onClick={toggleMuted}
                 aria-pressed={muted}
                 className={cn(
-                  "flex size-8 sm:size-7 items-center justify-center rounded-md border transition-colors active:scale-95",
+                  "flex size-7 items-center justify-center rounded-md border transition-colors active:scale-95",
                   muted
                     ? "border-destructive/40 bg-destructive/10 text-destructive hover:bg-destructive/20"
                     : "border-border/70 text-muted-foreground hover:bg-muted hover:text-foreground",
@@ -583,7 +480,7 @@ export function ConversationPanel() {
             {/* Right: Send Submit Button */}
             <PromptInputSubmit
               size="icon-sm"
-              className="rounded-md shadow-xs transition-transform active:scale-95"
+              className="rounded-md shadow-2xs transition-transform active:scale-95"
               {...(busy ? { status: "submitted" as const } : {})}
               disabled={offline || (!draft.trim() && !recording)}
             />

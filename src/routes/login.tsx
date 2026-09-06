@@ -25,10 +25,19 @@ function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
 
+  const handleProceedToApp = () => {
+    try {
+      sessionStorage.setItem("alie.app_entered", "true");
+    } catch {
+      /* ignore */
+    }
+    navigate({ to: "/app" });
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Non-functional mock sign in for now, smoothly transitions to /app
-    navigate({ to: "/app" });
+    handleProceedToApp();
   };
 
   return (
@@ -177,7 +186,7 @@ function LoginPage() {
             <div className="grid grid-cols-2 gap-2.5">
               <button
                 type="button"
-                onClick={() => navigate({ to: "/app" })}
+                onClick={handleProceedToApp}
                 className="flex items-center justify-center gap-2 rounded-md border border-border/80 bg-card px-3 py-2 text-xs font-medium text-foreground transition-colors hover:bg-muted active:scale-[0.98]"
               >
                 <svg className="size-4" viewBox="0 0 24 24">
@@ -203,7 +212,7 @@ function LoginPage() {
 
               <button
                 type="button"
-                onClick={() => navigate({ to: "/app" })}
+                onClick={handleProceedToApp}
                 className="flex items-center justify-center gap-2 rounded-md border border-border/80 bg-card px-3 py-2 text-xs font-medium text-foreground transition-colors hover:bg-muted active:scale-[0.98]"
               >
                 <svg className="size-4 fill-current" viewBox="0 0 24 24">
