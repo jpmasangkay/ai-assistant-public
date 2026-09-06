@@ -1,98 +1,95 @@
-# 💼 HeartConnect
-[![Ask DeepWiki](https://devin.ai/assets/askdeepwiki.png)](https://deepwiki.com/jpmasangkay/heartconnect)
+# 🌿 Alie
 
-### Student Freelancer Job Marketplace
+### Your Everyday Personal AI Companion
 
-**Post. Apply. Connect. Now.**
+**Thoughtful conversation. Calm daily planning. Quiet organization.**
 
-A full-stack freelancer job marketplace built for students — featuring real-time chat, role-based dashboards, job postings, and application management, all wrapped in a modern, responsive interface.
+Alie is a full-stack, personal AI companion web application designed for real life — combining conversational intelligence, hands-free voice interaction, clean to-do task management, and an integrated daily scratchpad, all presented in a quiet, editorial design system.
 
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
-[![Node.js](https://img.shields.io/badge/Node.js-Express-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org)
-[![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com)
-[![Socket.io](https://img.shields.io/badge/Socket.io-Realtime-010101?style=for-the-badge&logo=socket.io&logoColor=white)](https://socket.io)
-[![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://heartconnect-nine.vercel.app)
-[![Render](https://img.shields.io/badge/Backend_on-Render-46E3B7?style=for-the-badge&logo=render&logoColor=black)](https://heartconnect.onrender.com)
-
-🔗 **Live Demo:** [heartconnect-nine.vercel.app](https://heartconnect-nine.vercel.app)
-🖥️ **Backend API:** [heartconnect.onrender.com](https://heartconnect.onrender.com)
+[![TanStack Start](https://img.shields.io/badge/TanStack-Start%20%26%20Router-FF4154?style=for-the-badge&logo=tanstack&logoColor=white)](https://tanstack.com)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+[![Vite](https://img.shields.io/badge/Vite-8-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vite.dev)
+[![Nitro](https://img.shields.io/badge/Nitro-Server_Engine-F43F5E?style=for-the-badge&logo=nitro&logoColor=white)](https://nitro.unjs.io)
 
 ---
 
 ## ✨ Features
 
-### 👤 Authentication & Roles
+### 🎙️ Hands-Free Voice Assistant
 
-- **JWT-based authentication** — secure login, registration, and session handling
-- **Role-based dashboards** — separate views and permissions for Clients and Freelancers
-- Protected routes enforce access control across the entire application
+- **Voice & Speech Recognition** — speak naturally with Alie hands-free while cooking, walking, or multitasking
+- **Live Waveform Visualizer** — real-time microphone level meter gives responsive visual feedback
+- **Speech Audio Playback & Mute Control** — toggle spoken responses on or off with a single click
+- **Audio Error Guidance** — graceful feedback when microphone permissions are blocked
 
-### 📋 Job Postings
+### 💬 Thoughtful AI Chat & Tool Execution
 
-- Clients can **create, edit, and delete** job listings with full CRUD support
-- Freelancers can **browse and filter** available jobs by category, budget, and status
-- Each listing includes a detailed view with budget, description, tags, and deadline
+- **Natural Everyday Conversations** — conversational guidance without technical jargon or complex dashboards
+- **Integrated Tool Calling** — inspectable tool executions for message drafting, task management, and information lookup
+- **Starter Prompt Chips** — quick 1-tap prompts for daily planning, dinner ideas, email drafting, and explanations
+- **Conversation Management** — inline chat renaming, message clearing, and fresh conversation creation
 
-### 📨 Application Management
+### 📋 Calm To-Do Task Management
 
-- Freelancers can **apply to jobs** with a proposal message
-- Clients can **review, accept, or reject** applications from their dashboard
-- Application status updates are reflected in real time across both sides
+- **Clean Daily Checklist** — add tasks with urgency levels (Urgent, Normal, Low)
+- **1-Tap Completion** — check off finished items with live progress percentage indicators
+- **Quick Cleanup** — clear completed tasks in one click to keep your workspace clutter-free
+- **Local Persistence** — all tasks automatically save to browser storage
 
-### 💬 Real-Time Chat
+### 📝 Daily Notes & Scratchpad
 
-- **Socket.io-powered messaging** — instant delivery with no page refresh required
-- **In-chat file sharing** — attach and send files directly within conversations
-- Conversation threads are scoped per job and per user pair
+- **Always-Accessible Notepad** — jot down thoughts, grocery lists, links, or phone numbers
+- **Live Word & Date Tracking** — displays the active date and real-time word count
+- **Copy to Clipboard** — 1-click note copy with visual confirmation
+- **Automatic Auto-Save** — continuously synced to local storage with zero data loss
 
-### 🔔 Push Notifications
+### 🗂️ Chat History & Session Switching
 
-- **Firebase Cloud Messaging (FCM)** integration for push notifications
-- Users are alerted for new messages, application status changes, and job updates — even when the app is in the background
+- **Persistent Session Storage** — previous conversations are automatically saved and cataloged
+- **History Modal Dialog** — browse, resume, rename, or delete past conversations
+- **Relative Timestamps** — quickly see recent conversations with intuitive time-ago indicators
 
-### 🛡️ Reliability & Security
+### 📱 Mobile-First Responsive Design
 
-- **Rate limiting** — prevents API abuse and spam submissions
-- **Spam detection** — filters malicious or repetitive content in messages and listings
-- **Response caching** — reduces redundant database calls for frequently accessed data
-- **Zod runtime validation** — all API payloads validated and typed at the boundary
+- **Native Mobile Experience** — dynamic `h-dvh` viewport prevents browser address bars from obscuring inputs
+- **Segmented Mobile Tab Switcher** — cleanly switch between **Chat & Voice** and **To-Dos & Notes** on mobile screens
+- **Touch-Optimized Targets** — minimum 36–44px tap targets for buttons, checkboxes, and delete actions
+- **iOS Safari Zoom Prevention** — inputs sized at 16px on mobile to eliminate disruptive auto-zoom
 
-### ⚡ Performance & UX
+### 🎨 Quiet Luxury Design & Dark Mode
 
-- **TanStack React Query** — smart server state management with background refetching
-- **React Error Boundaries** — graceful error handling per component tree
-- **Skeleton loaders** — shimmer placeholders keep the UI responsive during data fetches
-- Fully **responsive** — mobile-first layout that adapts to any screen size
+- **Paper & Ink Color System** — custom OKLCH color palette optimized for calm, high-legibility readability
+- **Zero-Flicker Dark Mode** — theme preferences persist locally and respect system color schemes without flash of unstyled content (FOUC)
+- **Fluid Typography** — styled with Archivo for editorial headings and JetBrains Mono for technical details
 
 ---
 
 ## 🛠️ Tech Stack
 
-### Frontend
+### Frontend & Application Layer
 
 | Technology | Purpose |
 |-----------|---------|
-| **React 19** | Component architecture with concurrent rendering |
-| **TypeScript 5** | Full type safety across the entire codebase |
-| **Vite** | Lightning-fast dev server and optimized production builds |
-| **Tailwind CSS** | Utility-first styling with responsive, mobile-first design |
-| **shadcn/ui** | Accessible UI primitives (buttons, inputs, dialogs, and more) |
-| **TanStack React Query** | Server state management, caching, and background sync |
-| **Zod** | Runtime API response validation and TypeScript type inference |
-| **Socket.io Client** | Real-time bidirectional event-based communication |
-| **Lucide React** | Crisp, consistent icon set |
+| **React 19** | Modern component architecture with concurrent rendering and hooks |
+| **TypeScript 5** | Strict end-to-end type safety across the entire application |
+| **TanStack Start & Router** | Type-safe SSR framework with file-based routing and nested layout trees |
+| **TanStack React Query** | Asynchronous state management and client-side data synchronization |
+| **Tailwind CSS v4** | Next-generation utility-first styling with inline design system tokens (`@theme`) |
+| **Radix UI** | Accessible, unstyled primitives for dialogs, popovers, and accordions |
+| **Lucide React** | Consistent, minimalist iconography |
+| **Motion** | Fluid UI transitions and interactive micro-animations |
+| **Streamdown & Shiki** | Syntax-highlighted code blocks and markdown rendering |
 
-### Backend
+### Server & Tooling
 
 | Technology | Purpose |
 |-----------|---------|
-| **Node.js + Express** | REST API server and middleware layer |
-| **MongoDB + Mongoose** | Document database and ODM for data modeling |
-| **Socket.io** | Real-time WebSocket server for chat and notifications |
-| **JSON Web Tokens** | Stateless authentication and route protection |
-| **Firebase Admin SDK** | Server-side FCM push notification dispatch |
-| **express-rate-limit** | API rate limiting and abuse prevention |
+| **Vite 8** | High-performance build tool and hot module replacement (HMR) |
+| **Nitro** | Universal server engine for local dev, static builds, and edge deployments |
+| **ESLint 9 + Prettier** | Code quality enforcement, automated formatting, and style consistency |
+| **Web Speech API** | Browser-native speech recognition and audio recording capture |
 
 ---
 
@@ -100,230 +97,122 @@ A full-stack freelancer job marketplace built for students — featuring real-ti
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org) 18+
-- A **MongoDB** connection string (Atlas or local)
-- A **Firebase** project with FCM enabled
+- [Node.js](https://nodejs.org) 18.0.0 or higher
+- [npm](https://www.npmjs.com) or [Bun](https://bun.sh)
 
 ### Installation
 
 ```bash
 # Clone the repository
-git clone https://github.com/jpmasangkay/heartconnect.git
-cd heartconnect
+git clone https://github.com/jpmasangkay/ai-assistant-public.git
+cd ai-assistant-public
 
-# Install frontend dependencies
-cd frontend
+# Install dependencies
 npm install
-
-# Install backend dependencies
-cd ../backend
-npm install
-```
-
-### Environment Variables
-
-Create a `.env` file inside the `backend/` directory:
-
-```env
-PORT=5000
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
-CLIENT_URL=http://localhost:5173
-FIREBASE_PROJECT_ID=your_firebase_project_id
-FIREBASE_PRIVATE_KEY=your_firebase_private_key
-FIREBASE_CLIENT_EMAIL=your_firebase_client_email
-```
-
-Create a `.env` file inside the `frontend/` directory:
-
-```env
-VITE_API_URL=http://localhost:5000
-VITE_SOCKET_URL=http://localhost:5000
 ```
 
 ### Development
 
 ```bash
-# Start the backend server
-cd backend
-npm run dev
-
-# In a separate terminal, start the frontend
-cd frontend
+# Start the development server
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173) in your browser.
+Open [http://localhost:8080](http://localhost:8080) (or the port indicated in your terminal) in your browser.
 
 ### Available Scripts
 
-#### Frontend
-
 | Command | Description |
 |---------|-------------|
-| `npm run dev` | Start the Vite development server |
-| `npm run build` | Type-check with `tsc` and build for production |
-| `npm run preview` | Preview the production build locally |
-| `npm run lint` | Run ESLint across the project |
-
-#### Backend
-
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start the Express server with hot reload |
-| `npm run build` | Compile TypeScript for production |
-| `npm start` | Run the compiled production server |
+| `npm run dev` | Starts the Vite development server with hot module replacement |
+| `npm run build` | Compiles and builds production assets using Vite and Nitro |
+| `npm run preview` | Previews the production build locally |
+| `npm run lint` | Runs ESLint across all TypeScript and React files |
+| `npm run format` | Automatically formats the codebase with Prettier |
 
 ---
 
 ## 📁 Project Structure
 
 ```
-heartconnect/
-├── frontend/                            # React frontend
-│   ├── public/                          # Static assets
-│   └── src/
-│       ├── main.tsx                     # Entry point — React DOM + QueryClientProvider
-│       ├── App.tsx                      # Root component — routes, auth context, boundaries
-│       ├── index.css                    # Global styles & Tailwind directives
-│       ├── types/
-│       │   └── index.ts                 # Shared TypeScript types (User, Job, Application, etc.)
-│       ├── lib/
-│       │   └── utils.ts                 # cn() helper (clsx + tailwind-merge)
-│       ├── schemas/                     # Zod validation schemas
-│       │   ├── authSchema.ts            # Login / registration payload schemas
-│       │   ├── jobSchema.ts             # Job listing create / edit schemas
-│       │   └── applicationSchema.ts    # Application submission schemas
-│       ├── api/                         # API fetch functions
-│       │   ├── auth.ts                  # Auth endpoints (login, register, me)
-│       │   ├── jobs.ts                  # Job CRUD endpoints
-│       │   ├── applications.ts          # Application management endpoints
-│       │   └── messages.ts             # Chat and file-share endpoints
-│       ├── hooks/                       # Custom React Query hooks
-│       │   ├── useAuth.ts
-│       │   ├── useJobs.ts
-│       │   ├── useApplications.ts
-│       │   └── useMessages.ts
-│       ├── context/
-│       │   ├── AuthContext.tsx          # Global auth state and JWT handling
-│       │   └── SocketContext.tsx        # Socket.io connection and event handling
-│       ├── components/
-│       │   ├── ui/                      # shadcn/ui primitives (button, input, dialog, …)
-│       │   ├── layout/
-│       │   │   ├── Navbar.tsx           # Top navigation with role-aware links
-│       │   │   └── Sidebar.tsx          # Dashboard sidebar navigation
-│       │   ├── jobs/
-│       │   │   ├── JobCard.tsx          # Job listing card component
-│       │   │   ├── JobForm.tsx          # Create / edit job form
-│       │   │   └── JobFilters.tsx       # Filter bar for job browsing
-│       │   ├── applications/
-│       │   │   ├── ApplicationCard.tsx  # Application summary card
-│       │   │   └── ProposalForm.tsx     # Freelancer proposal submission form
-│       │   ├── chat/
-│       │   │   ├── ChatWindow.tsx       # Real-time message thread view
-│       │   │   ├── MessageBubble.tsx    # Individual message component
-│       │   │   └── FileUpload.tsx       # In-chat file attachment handler
-│       │   └── skeletons/              # Shimmer skeleton loaders
-│       └── pages/
-│           ├── LandingPage.tsx
-│           ├── LoginPage.tsx
-│           ├── RegisterPage.tsx
-│           ├── JobsPage.tsx
-│           ├── JobDetailPage.tsx
-│           ├── ClientDashboard.tsx
-│           ├── FreelancerDashboard.tsx
-│           └── ChatPage.tsx
+ai-assistant-public/
+├── public/                              # Static public assets
+│   ├── favicon.svg                      # Custom Alie vector SVG favicon
+│   ├── favicon.ico                      # Multi-resolution ICO fallback
+│   ├── apple-touch-icon.png             # iOS home screen touch icon
+│   └── robots.txt                       # Search engine crawler directives
 │
-└── backend/                             # Express backend
-    └── src/
-        ├── index.ts                     # Server entry point — Express + Socket.io init
-        ├── config/
-        │   ├── db.ts                    # MongoDB connection setup
-        │   └── firebase.ts              # Firebase Admin SDK initialization
-        ├── middleware/
-        │   ├── auth.ts                  # JWT verification middleware
-        │   ├── rateLimiter.ts           # express-rate-limit configuration
-        │   └── spamDetection.ts         # Content spam filter middleware
-        ├── models/
-        │   ├── User.ts                  # User schema (role, profile, FCM token)
-        │   ├── Job.ts                   # Job listing schema
-        │   ├── Application.ts           # Application schema
-        │   └── Message.ts              # Chat message schema
-        ├── routes/
-        │   ├── auth.ts                  # POST /register, /login, /me
-        │   ├── jobs.ts                  # CRUD /jobs
-        │   ├── applications.ts          # CRUD /applications
-        │   └── messages.ts             # GET/POST /messages
-        ├── controllers/                 # Route handler logic
-        ├── socket/
-        │   └── index.ts                 # Socket.io event handlers (chat, notifications)
-        └── utils/
-            ├── sendNotification.ts      # FCM push notification dispatcher
-            └── cache.ts                 # In-memory response caching helpers
+├── src/
+│   ├── assets/                          # Brand assets
+│   │   ├── alie-mark.svg                # Vector Alie monogram mark
+│   │   └── alie-mark.png                # High-res monogram fallback
+│   │
+│   ├── components/
+│   │   ├── ai-elements/                 # Reusable AI conversation primitives
+│   │   │   ├── conversation.tsx         # Stick-to-bottom scroll container
+│   │   │   ├── message.tsx              # User and assistant message bubbles
+│   │   │   ├── prompt-input.tsx         # Textarea input with send button & shortcuts
+│   │   │   ├── tool.tsx                 # Expandable tool execution cards
+│   │   │   └── code-block.tsx           # Syntax-highlighted code blocks
+│   │   │
+│   │   ├── alie/                        # Alie application domain components
+│   │   │   ├── HeaderBar.tsx            # Top bar with status pill, new chat, and history
+│   │   │   ├── ConversationPanel.tsx    # Primary conversation stage & voice controls
+│   │   │   ├── TaskList.tsx             # Daily to-do list with priorities and filtering
+│   │   │   ├── DailyOverviewPanel.tsx   # Progress bar, calendar date, and scratchpad
+│   │   │   ├── ChatHistoryDialog.tsx    # Modal dialog to browse and resume saved chats
+│   │   │   ├── ThemeToggle.tsx          # Light/Dark mode switcher
+│   │   │   └── Panel.tsx                # Card container with title and action headers
+│   │   │
+│   │   └── ui/                          # Radix UI and shadcn design system primitives
+│   │
+│   ├── lib/
+│   │   ├── alie/                        # State management and client stores
+│   │   │   ├── store.tsx                # Context provider for chats, tasks, and speech
+│   │   │   ├── audio.ts                 # Microphone capture and waveform processing
+│   │   │   ├── client.ts                # AI Assistant WebSocket / API streaming client
+│   │   │   └── types.ts                 # Data models (ChatMessage, Task, Session)
+│   │   └── utils.ts                     # Utility helpers (cn class merging)
+│   │
+│   ├── routes/                          # TanStack Router file-based pages
+│   │   ├── __root.tsx                   # Root shell with global meta, fonts, and scripts
+│   │   ├── index.tsx                    # Landing page with interactive scenarios & FAQ
+│   │   ├── app.tsx                      # Main AI Assistant workspace layout
+│   │   ├── login.tsx                    # User sign-in page
+│   │   └── signup.tsx                   # User registration page
+│   │
+│   ├── router.tsx                       # TanStack Router instance creation
+│   ├── server.ts                        # Nitro server entry point
+│   ├── start.ts                         # TanStack Start handler
+│   └── styles.css                       # Tailwind v4 theme, design tokens, and utilities
+│
+├── package.json                         # Project dependencies and npm scripts
+├── tsconfig.json                        # TypeScript compiler options
+└── vite.config.ts                       # Vite and TanStack Start plugins configuration
 ```
 
 ---
 
 ## 🧠 How It Works
 
-HeartConnect is built around a **role-driven, real-time architecture** connecting student clients and freelancers:
+1. **State & Offline-First Persistence** — The application state (`AlieProvider`) manages active chat messages, task lists, scratchpad notes, and conversation history using local browser storage with automatic fallback.
 
-1. **Authentication** — Users register as either a Client or Freelancer. JWTs are issued on login and attached to every subsequent API request. Protected routes on both the frontend and backend enforce role-based access.
+2. **Hands-Free Speech Pipeline** — When the microphone is toggled, browser-native audio streams calculate decibel levels in real time to render animated waveform bars. Speech transcripts feed directly into Alie's conversation stream.
 
-2. **Job Marketplace** — Clients post jobs with a title, description, budget, and deadline. Freelancers browse the listings page with filter support. Each job detail page shows full info and an apply button for eligible freelancers.
+3. **Tool Execution Engine** — When Alie performs actions (such as organizing to-dos or drafting messages), tool execution blocks render inline with input/output payloads and expandable execution diagnostics.
 
-3. **Application Flow** — Freelancers submit a proposal tied to a job. Clients see all incoming applications in their dashboard and can accept or reject them. Status changes are immediately reflected via React Query cache invalidation.
+4. **Responsive Dual-Mode Architecture**:
+   - **On Desktop (`≥ 1024px`)**: Renders a split-screen workspace with the conversational agent on the left (62%) and the daily companion (Tasks & Notes) pinned on the right (38%).
+   - **On Mobile (`< 1024px`)**: Dynamically shifts into a segmented tab interface (`[ Chat & Voice ]` vs `[ To-Dos & Notes ]`) with dynamic `100dvh` height, keeping the prompt input permanently anchored above the mobile virtual keyboard.
 
-4. **Real-Time Chat** — Once connected, users communicate through Socket.io. Message events are emitted from the client, broadcast by the server, and received by the other party's active socket connection — no polling required. Files are uploaded via a dedicated endpoint and the download link is sent as a message payload.
-
-5. **Push Notifications** — When a message arrives or an application status changes, the backend dispatches an FCM notification via Firebase Admin SDK to the recipient's registered device token — keeping users informed even when the tab is closed.
-
-6. **Data Integrity** — Every form submission and API response is validated through a **Zod schema** before touching application state, ensuring type safety from the network boundary all the way through the UI.
-
----
-
-## 🌐 Deployment
-
-HeartConnect's frontend is deployed on **Vercel** and the backend is hosted on **Render**.
-
-| Service | URL |
-|---------|-----|
-| **Frontend (Vercel)** | [heartconnect-nine.vercel.app](https://heartconnect-nine.vercel.app) |
-| **Backend (Render)** | [heartconnect.onrender.com](https://heartconnect.onrender.com) |
-
-Pushing to `master` triggers an automatic build and deployment on Vercel.
-
-To deploy your own instance:
-1. Import the `frontend/` folder into [Vercel](https://vercel.com) as the project root
-2. Add the following environment variables in Vercel's **Environment Variables** settings:
-   ```env
-   VITE_API_URL=https://heartconnect.onrender.com
-   VITE_SOCKET_URL=https://heartconnect.onrender.com
-   ```
-3. Deploy the `backend/` to [Render](https://render.com) and configure your server-side environment variables there
-
----
-
-## 👥 Team
-
-Built as a **CS 321 Software Engineering** final project at Sacred Heart College of Lucena City, Inc.
-
-| Role | Responsibility |
-|------|---------------|
-| **Analyst** | Requirements gathering, documentation, use-case modeling |
-| **UI/UX Designer** | Wireframes, design system, component prototyping |
-| **Programmer** | Frontend and backend implementation |
-| **DB / QA** | Database design, test planning, and quality assurance |
+5. **Editorial Design Tokens** — Color palettes are built on OKLCH mathematical color spaces (`--paper`, `--ink`, `--signal`, `--rule`), providing contrast that meets WCAG AAA standards in both light and dark themes.
 
 ---
 
 ## 👏 Acknowledgements
 
-- UI primitives by [shadcn/ui](https://ui.shadcn.com/)
-- Icons by [Lucide](https://lucide.dev/)
-- Real-time engine by [Socket.io](https://socket.io/)
-- Push notifications by [Firebase Cloud Messaging](https://firebase.google.com/docs/cloud-messaging)
-- Database by [MongoDB Atlas](https://www.mongodb.com/atlas)
-
----
-
+- UI primitives by [Radix UI](https://www.radix-ui.com/)
+- Icons by [Lucide React](https://lucide.dev/)
+- Routing & Data by [TanStack](https://tanstack.com/)
+- CSS Framework by [Tailwind CSS](https://tailwindcss.com/)
+- Typography by [Archivo](https://fonts.google.com/specimen/Archivo) and [JetBrains Mono](https://www.jetbrains.com/lp/mono/)

@@ -6,22 +6,36 @@ import { useAlie } from "@/lib/alie/store";
 import { cn } from "@/lib/utils";
 import type { TaskPriority } from "@/lib/alie/types";
 
-const PRIORITY_OPTIONS: { value: TaskPriority; label: string; badgeClass: string }[] = [
-  {
-    value: "normal",
-    label: "Normal",
-    badgeClass: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20",
-  },
-  {
+interface PriorityOption {
+  value: TaskPriority;
+  label: string;
+  badgeClass: string;
+}
+
+const DEFAULT_PRIORITY: PriorityOption = {
+  value: "normal",
+  label: "Normal",
+  badgeClass: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20",
+};
+
+const PRIORITY_MAP: Record<TaskPriority, PriorityOption> = {
+  normal: DEFAULT_PRIORITY,
+  high: {
     value: "high",
     label: "Urgent",
     badgeClass: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
   },
-  {
+  low: {
     value: "low",
     label: "Low",
     badgeClass: "bg-muted text-muted-foreground border-border",
   },
+};
+
+const PRIORITY_OPTIONS: PriorityOption[] = [
+  PRIORITY_MAP.normal,
+  PRIORITY_MAP.high,
+  PRIORITY_MAP.low,
 ];
 
 function formatTimeAgo(timestamp: number) {
@@ -69,7 +83,7 @@ export function TaskList() {
           </span>
         </div>
       }
-      className="min-h-[14rem]"
+      className="min-h-56"
     >
       {/* Add Task Input Form */}
       <form
@@ -86,13 +100,13 @@ export function TaskList() {
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Add a task (e.g., Call doctor, Review notes)..."
           disabled={offline}
-          className="min-w-0 flex-1 rounded-md border border-border/80 bg-background px-2.5 py-1.5 text-xs text-foreground placeholder:text-muted-foreground/60 outline-none transition-all focus:border-signal/50 focus:ring-1 focus:ring-signal/20 disabled:opacity-50"
+          className="min-w-0 flex-1 rounded-md border border-border/80 bg-background px-2.5 py-2 sm:py-1.5 text-base sm:text-xs text-foreground placeholder:text-muted-foreground/60 outline-none transition-all focus:border-signal/50 focus:ring-1 focus:ring-signal/20 disabled:opacity-50"
         />
 
         <select
           value={priority}
           onChange={(e) => setPriority(e.target.value as TaskPriority)}
-          className="rounded-md border border-border/80 bg-background px-2 py-1.5 text-xs font-medium text-foreground outline-none transition-colors hover:bg-muted/40 focus:border-signal"
+          className="rounded-md border border-border/80 bg-background px-2.5 py-2 sm:py-1.5 text-base sm:text-xs font-medium text-foreground outline-none transition-colors hover:bg-muted/40 focus:border-signal"
         >
           {PRIORITY_OPTIONS.map((p) => (
             <option key={p.value} value={p.value}>
@@ -104,7 +118,7 @@ export function TaskList() {
         <button
           type="submit"
           disabled={offline || !title.trim()}
-          className="flex items-center gap-1 rounded-md bg-foreground px-3 py-1.5 text-xs font-medium text-background shadow-xs transition-opacity hover:opacity-90 disabled:opacity-40"
+          className="flex items-center gap-1 rounded-md bg-foreground px-3.5 py-2 sm:px-3 sm:py-1.5 text-xs font-medium text-background shadow-xs transition-opacity hover:opacity-90 disabled:opacity-40 active:scale-95"
         >
           <Plus className="size-3.5" />
           <span className="hidden sm:inline">Add</span>
@@ -124,8 +138,7 @@ export function TaskList() {
         )}
 
         {tasks.map((task) => {
-          const priorityInfo =
-            PRIORITY_OPTIONS.find((p) => p.value === task.priority) || PRIORITY_OPTIONS[0];
+          const priorityInfo = PRIORITY_MAP[task.priority] ?? DEFAULT_PRIORITY;
 
           return (
             <li
@@ -135,19 +148,19 @@ export function TaskList() {
               <button
                 type="button"
                 onClick={() => toggleTask(task.id)}
-                className="flex min-w-0 flex-1 items-start gap-2.5 text-left outline-none focus-visible:ring-1 focus-visible:ring-signal/30 rounded"
+                className="flex min-w-0 flex-1 items-start gap-2.5 text-left outline-none focus-visible:ring-1 focus-visible:ring-signal/30 rounded py-0.5"
               >
                 {/* Checkbox Icon */}
                 <span
                   className={cn(
-                    "mt-0.5 flex size-4 shrink-0 items-center justify-center rounded border transition-all",
+                    "mt-0.5 flex size-5 sm:size-4 shrink-0 items-center justify-center rounded border transition-all",
                     task.status === "done"
                       ? "border-emerald-500 bg-emerald-500 text-white"
                       : "border-border/80 group-hover:border-foreground/60",
                   )}
                   aria-hidden
                 >
-                  {task.status === "done" && <Check className="size-3 stroke-[3]" />}
+                  {task.status === "done" && <Check className="size-3 stroke-3" />}
                 </span>
 
                 {/* Task Details */}
@@ -183,7 +196,7 @@ export function TaskList() {
                   e.stopPropagation();
                   deleteTask(task.id);
                 }}
-                className="shrink-0 rounded p-1 text-muted-foreground/60 opacity-80 transition-all hover:bg-destructive/10 hover:text-destructive hover:opacity-100 active:scale-95 sm:opacity-0 sm:group-hover:opacity-100"
+                className="shrink-0 flex size-8 sm:size-7 items-center justify-center rounded p-1 text-muted-foreground/70 opacity-90 transition-all hover:bg-destructive/10 hover:text-destructive hover:opacity-100 active:scale-95 sm:opacity-0 sm:group-hover:opacity-100"
                 title="Delete task"
                 aria-label={`Delete task: ${task.title}`}
               >

@@ -302,12 +302,12 @@ export function ConversationPanel() {
                   }}
                   autoFocus
                   maxLength={60}
-                  className="flex-1 rounded border border-border bg-background px-2 py-0.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+                  className="flex-1 rounded border border-border bg-background px-2.5 py-1 text-base sm:text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
                   placeholder="Chat name"
                 />
                 <button
                   type="submit"
-                  className="rounded p-1 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10 active:scale-95 transition-colors"
+                  className="rounded p-1.5 sm:p-1 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10 active:scale-95 transition-colors"
                   title="Save title (Enter)"
                   aria-label="Save title"
                 >
@@ -316,7 +316,7 @@ export function ConversationPanel() {
                 <button
                   type="button"
                   onClick={handleCancelRename}
-                  className="rounded p-1 text-muted-foreground hover:bg-muted active:scale-95 transition-colors"
+                  className="rounded p-1.5 sm:p-1 text-muted-foreground hover:bg-muted active:scale-95 transition-colors"
                   title="Cancel (Esc)"
                   aria-label="Cancel rename"
                 >
@@ -335,7 +335,7 @@ export function ConversationPanel() {
                 <button
                   type="button"
                   onClick={handleStartRename}
-                  className="rounded p-1 text-muted-foreground/60 transition-colors hover:bg-muted hover:text-foreground active:scale-95"
+                  className="rounded p-1.5 sm:p-1 text-muted-foreground/60 transition-colors hover:bg-muted hover:text-foreground active:scale-95"
                   title="Rename this conversation"
                   aria-label="Rename conversation"
                 >
@@ -445,7 +445,7 @@ export function ConversationPanel() {
                   : "Type a message or tap Voice to speak..."
             }
             disabled={offline}
-            className="text-sm font-sans placeholder:text-muted-foreground/50"
+            className="text-base sm:text-sm font-sans placeholder:text-muted-foreground/50"
           />
 
           {/* Live Voice Recording Waveform Bar (active while recording) */}
@@ -486,7 +486,7 @@ export function ConversationPanel() {
                 disabled={offline}
                 onClick={toggleTalking}
                 className={cn(
-                  "flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium transition-all active:scale-95",
+                  "flex items-center gap-1.5 rounded-md px-3 py-1.5 sm:px-2.5 sm:py-1 text-xs font-medium transition-all active:scale-95",
                   recording
                     ? "bg-signal text-signal-foreground animate-pulse shadow-xs"
                     : "border border-border/70 text-muted-foreground hover:bg-muted hover:text-foreground",
@@ -514,7 +514,7 @@ export function ConversationPanel() {
                 onClick={toggleMuted}
                 aria-pressed={muted}
                 className={cn(
-                  "flex size-7 items-center justify-center rounded-md border transition-colors",
+                  "flex size-8 sm:size-7 items-center justify-center rounded-md border transition-colors active:scale-95",
                   muted
                     ? "border-destructive/40 bg-destructive/10 text-destructive hover:bg-destructive/20"
                     : "border-border/70 text-muted-foreground hover:bg-muted hover:text-foreground",

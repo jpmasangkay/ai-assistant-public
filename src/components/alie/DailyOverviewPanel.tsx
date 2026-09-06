@@ -67,7 +67,7 @@ export function DailyOverviewPanel() {
           {dateFormatted}
         </span>
       }
-      className="min-h-[14rem]"
+      className="min-h-56"
     >
       <div className="flex flex-col gap-3 p-3.5">
         {/* Task Completion Status Card (if tasks exist) */}
@@ -109,7 +109,7 @@ export function DailyOverviewPanel() {
                   <button
                     type="button"
                     onClick={handleCopyNote}
-                    className="flex items-center gap-1 rounded px-1.5 py-0.5 text-[0.68rem] text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                    className="flex items-center gap-1 rounded px-2 py-1 sm:px-1.5 sm:py-0.5 text-xs sm:text-[0.68rem] text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:scale-95"
                     title="Copy note"
                   >
                     {copied ? (
@@ -128,7 +128,7 @@ export function DailyOverviewPanel() {
                   <button
                     type="button"
                     onClick={handleClearNote}
-                    className="rounded p-1 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+                    className="rounded p-1.5 sm:p-1 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive active:scale-95"
                     title="Clear notepad"
                   >
                     <Trash2 className="size-3" />
@@ -144,7 +144,7 @@ export function DailyOverviewPanel() {
             onChange={(e) => handleNoteChange(e.target.value)}
             placeholder="Jot down notes, links, phone numbers, or ideas here (auto-saved locally)..."
             rows={5}
-            className="w-full resize-none bg-transparent p-3 text-xs leading-relaxed text-foreground placeholder:text-muted-foreground/50 outline-none"
+            className="w-full resize-none bg-transparent p-3 text-base sm:text-xs leading-relaxed text-foreground placeholder:text-muted-foreground/50 outline-none"
           />
         </div>
       </div>

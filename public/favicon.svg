@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" fill="none">
+  <defs>
+    <linearGradient id="alie-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1C1C21" />
+      <stop offset="100%" stop-color="#0E0E12" />
+    </linearGradient>
+    <linearGradient id="alie-border" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#383842" />
+      <stop offset="100%" stop-color="#222228" />
+    </linearGradient>
+  </defs>
+  <rect x="1" y="1" width="30" height="30" rx="7.5" fill="url(#alie-bg)" stroke="url(#alie-border)" stroke-width="1" />
+  <path
+    d="M 14.85 5.5 L 17.15 5.5 L 24.35 23.5 L 25.4 23.5 L 25.4 25.2 L 23.0 25.2 L 22.4 23.5 L 20.35 18.2 L 11.65 18.2 L 9.6 23.5 L 9.0 25.2 L 6.6 25.2 L 6.6 23.5 L 7.65 23.5 Z M 16.0 8.8 L 12.35 16.8 L 19.65 16.8 Z"
+    fill="#FFFFFF"
+    fill-rule="evenodd"
+  />
+</svg>

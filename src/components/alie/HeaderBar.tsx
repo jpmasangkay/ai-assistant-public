@@ -110,7 +110,7 @@ export function HeaderBar() {
             <button
               type="button"
               onClick={newChat}
-              className="flex items-center gap-1 rounded-md border border-border/80 bg-card px-2.5 py-1 text-xs font-medium text-foreground transition-colors hover:bg-muted active:scale-95 shadow-xs"
+              className="flex items-center gap-1 rounded-md border border-border/80 bg-card px-2.5 py-1.5 sm:py-1 text-xs font-medium text-foreground transition-colors hover:bg-muted active:scale-95 shadow-xs"
               title="Start a new chat"
             >
               <Plus className="size-3.5" />
@@ -121,7 +121,7 @@ export function HeaderBar() {
             <button
               type="button"
               onClick={() => setOpenHistory(true)}
-              className="flex items-center gap-1.5 rounded-md border border-border/80 bg-card px-2.5 py-1 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:scale-95 shadow-xs"
+              className="flex items-center gap-1.5 rounded-md border border-border/80 bg-card px-2.5 py-1.5 sm:py-1 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:scale-95 shadow-xs"
               title="View past chats"
             >
               <Clock className="size-3.5" />

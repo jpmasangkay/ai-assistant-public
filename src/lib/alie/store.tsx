@@ -416,10 +416,11 @@ export function AlieProvider({ children }: { children: ReactNode }) {
     setChatHistory((prev) => {
       const existingIndex = prev.findIndex((s) => s.id === sessionId);
       let next: ChatSession[];
-      if (existingIndex >= 0) {
+      const existing = prev[existingIndex];
+      if (existingIndex >= 0 && existing) {
         next = [...prev];
         next[existingIndex] = {
-          ...next[existingIndex],
+          ...existing,
           title: trimmed,
           customTitle: true,
           updatedAt: Date.now(),

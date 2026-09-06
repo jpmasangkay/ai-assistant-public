@@ -1,3 +1,4 @@
 {
-    "git.path":  "C:\\Users\\My Laptop\\AppData\\Local\\GitHubDesktop\\app-3.6.4\\resources\\app\\git\\cmd\\git.exe"
+  "git.path": "C:\\Users\\My Laptop\\AppData\\Local\\GitHubDesktop\\app-3.6.4\\resources\\app\\git\\cmd\\git.exe",
+  "tailwindCSS.lint.cssConflict": "ignore"
 }

@@ -40,11 +40,11 @@ export function TerminalConsole() {
           <span>Clear</span>
         </button>
       }
-      className="min-h-[12rem]"
+      className="min-h-48"
     >
       <pre
         ref={ref}
-        className="h-full overflow-auto whitespace-pre-wrap break-words p-4 font-mono text-[0.72rem] leading-relaxed bg-background/60"
+        className="h-full overflow-auto whitespace-pre-wrap wrap-break-word p-4 font-mono text-[0.72rem] leading-relaxed bg-background/60"
       >
         {terminalLogs.length === 0 ? (
           <span className="text-muted-foreground/60 italic">

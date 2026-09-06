@@ -96,7 +96,7 @@ function LoginPage() {
                     placeholder="you@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full rounded-md border border-input bg-background py-2 pl-9 pr-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground/60 focus:border-signal focus:ring-1 focus:ring-signal"
+                    className="w-full rounded-md border border-input bg-background py-2 pl-9 pr-3 text-base sm:text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground/60 focus:border-signal focus:ring-1 focus:ring-signal"
                   />
                 </div>
               </div>
@@ -128,12 +128,12 @@ function LoginPage() {
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full rounded-md border border-input bg-background py-2 pl-9 pr-10 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground/60 focus:border-signal focus:ring-1 focus:ring-signal"
+                    className="w-full rounded-md border border-input bg-background py-2 pl-9 pr-10 text-base sm:text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground/60 focus:border-signal focus:ring-1 focus:ring-signal"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1.5 text-muted-foreground transition-colors hover:text-foreground active:scale-95"
                     title={showPassword ? "Hide password" : "Show password"}
                   >
                     {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}

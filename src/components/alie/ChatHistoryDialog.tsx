@@ -144,13 +144,13 @@ export function ChatHistoryDialog({ open, onClose }: { open: boolean; onClose: (
                           }}
                           autoFocus
                           maxLength={60}
-                          className="flex-1 rounded-md border border-border bg-background px-2 py-1 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+                          className="flex-1 rounded-md border border-border bg-background px-2.5 py-1 text-base sm:text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
                           placeholder="Conversation title"
                         />
                         <button
                           type="button"
                           onClick={() => handleSaveRename(session.id)}
-                          className="rounded-md p-1.5 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10 active:scale-95 transition-colors"
+                          className="rounded-md p-2 sm:p-1.5 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10 active:scale-95 transition-colors"
                           title="Save name (Enter)"
                           aria-label="Save name"
                         >
@@ -159,7 +159,7 @@ export function ChatHistoryDialog({ open, onClose }: { open: boolean; onClose: (
                         <button
                           type="button"
                           onClick={handleCancelRename}
-                          className="rounded-md p-1.5 text-muted-foreground hover:bg-muted active:scale-95 transition-colors"
+                          className="rounded-md p-2 sm:p-1.5 text-muted-foreground hover:bg-muted active:scale-95 transition-colors"
                           title="Cancel (Esc)"
                           aria-label="Cancel renaming"
                         >
@@ -199,7 +199,7 @@ export function ChatHistoryDialog({ open, onClose }: { open: boolean; onClose: (
                       <button
                         type="button"
                         onClick={(e) => handleStartRename(e, session.id, session.title)}
-                        className="rounded p-1 text-muted-foreground/60 transition-colors hover:bg-muted hover:text-foreground active:scale-95"
+                        className="rounded p-2 sm:p-1 text-muted-foreground/60 transition-colors hover:bg-muted hover:text-foreground active:scale-95"
                         title="Rename conversation"
                         aria-label={`Rename ${session.title}`}
                       >
@@ -211,7 +211,7 @@ export function ChatHistoryDialog({ open, onClose }: { open: boolean; onClose: (
                           e.stopPropagation();
                           deleteSession(session.id);
                         }}
-                        className="rounded p-1 text-muted-foreground/60 transition-colors hover:bg-destructive/10 hover:text-destructive active:scale-95"
+                        className="rounded p-2 sm:p-1 text-muted-foreground/60 transition-colors hover:bg-destructive/10 hover:text-destructive active:scale-95"
                         title="Delete conversation from history"
                         aria-label={`Delete ${session.title}`}
                       >

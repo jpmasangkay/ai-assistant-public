@@ -20,13 +20,13 @@ import { ThemeToggle } from "@/components/alie/ThemeToggle";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Alie — Your Everyday AI Companion" },
+      { title: "Alie" },
       {
         name: "description",
         content:
           "Meet Alie: a thoughtful, quiet personal AI companion for everyday voice and text conversations, daily planning, and to-do organization.",
       },
-      { property: "og:title", content: "Alie — Your Everyday AI Companion" },
+      { property: "og:title", content: "Alie" },
       {
         property: "og:description",
         content:
@@ -242,7 +242,7 @@ function LandingPage() {
             </Link>
           </div>
 
-          <div className="mt-4 flex items-center justify-center gap-5 text-[11px] text-muted-foreground">
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 px-2 text-[11px] text-muted-foreground">
             <span className="flex items-center gap-1">
               <Check className="size-3 text-signal" /> No setup required
             </span>
