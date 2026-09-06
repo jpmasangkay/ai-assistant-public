@@ -11,6 +11,7 @@ import {
 
 import { AlieClient } from "./client";
 import { AudioQueue, startRecording, type RecorderHandle } from "./audio";
+import type { PersonaMode } from "./persona";
 import type {
   AgentStatus,
   ChatMessage,
@@ -25,6 +26,7 @@ import type {
 
 const STORAGE_KEY = "alie.connection";
 const CHAT_HISTORY_STORAGE_KEY = "alie.chat_history";
+const PERSONA_STORAGE_KEY = "alie.persona";
 const DEFAULT_CONFIG: ConnectionConfig = { serverUrl: "ws://192.168.1.20:8787", token: "" };
 
 function loadStoredHistory(): ChatSession[] {
@@ -82,6 +84,8 @@ interface AlieContextValue {
   toggleTalking: () => void;
   viewMode: "simple" | "developer";
   setViewMode: (mode: "simple" | "developer") => void;
+  persona: PersonaMode;
+  setPersona: (mode: PersonaMode) => void;
 }
 
 const AlieContext = createContext<AlieContextValue | null>(null);
@@ -108,6 +112,31 @@ export function AlieProvider({ children }: { children: ReactNode }) {
   const [micLevel, setMicLevel] = useState(0);
   const [micError, setMicError] = useState<string | null>(null);
   const [viewMode, setViewModeState] = useState<"simple" | "developer">("simple");
+  const [persona, setPersonaState] = useState<PersonaMode>(() => {
+    try {
+      const saved = localStorage.getItem(PERSONA_STORAGE_KEY);
+      if (saved === "cozy" || saved === "candid" || saved === "zen") return saved;
+    } catch {
+      /* storage unavailable */
+    }
+    return "cozy";
+  });
+
+  const setPersona = useCallback(
+    (next: PersonaMode) => {
+      setPersonaState(next);
+      client.setPersona(next);
+      try {
+        localStorage.setItem(PERSONA_STORAGE_KEY, next);
+      } catch {
+        /* storage unavailable */
+      }
+    },
+    [client],
+  );
+
+  const personaRef = useRef(persona);
+  personaRef.current = persona;
 
   useEffect(() => {
     if (messages.length === 0) return;
@@ -164,9 +193,10 @@ export function AlieProvider({ children }: { children: ReactNode }) {
       /* first run */
     }
     setConfigState(initialConfig);
+    client.setPersona(persona);
     // Automatically connect so the assistant is immediately ready for conversation & voice
     void client.connect(initialConfig);
-  }, [client]);
+  }, [client, persona]);
 
   const setViewMode = useCallback((mode: "simple" | "developer") => {
     setViewModeState(mode);
@@ -215,6 +245,7 @@ export function AlieProvider({ children }: { children: ReactNode }) {
               timestamp: Date.now(),
               streaming: true,
               tools: [],
+              persona: event.persona ?? personaRef.current,
             },
           ]);
           break;
@@ -527,6 +558,8 @@ export function AlieProvider({ children }: { children: ReactNode }) {
       toggleTalking,
       viewMode,
       setViewMode,
+      persona,
+      setPersona,
     }),
     [
       config,
@@ -561,6 +594,8 @@ export function AlieProvider({ children }: { children: ReactNode }) {
       toggleTalking,
       viewMode,
       setViewMode,
+      persona,
+      setPersona,
     ],
   );
 

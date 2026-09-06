@@ -19,7 +19,7 @@ import {
   X,
 } from "lucide-react";
 
-import alieMark from "@/assets/alie-mark.png";
+import { AlieAvatar } from "@/components/alie/AlieAvatar";
 import {
   Conversation,
   ConversationContent,
@@ -39,28 +39,10 @@ import {
   ToolInput,
   ToolOutput,
 } from "@/components/ai-elements/tool";
+import { getGreetingForHour, getPersonaConfig, type PersonaMode } from "@/lib/alie/persona";
 import { useAlie } from "@/lib/alie/store";
 import type { ChatMessage, ToolExecution } from "@/lib/alie/types";
 import { cn } from "@/lib/utils";
-
-const PROMPT_SUGGESTIONS = [
-  {
-    label: "Plan my day",
-    prompt: "Can you suggest a calm, balanced plan for my day today?",
-  },
-  {
-    label: "Draft a follow-up email",
-    prompt: "Can you help me draft a warm, polite message to follow up on our plans?",
-  },
-  {
-    label: "Quick 15-min dinner idea",
-    prompt: "What is a quick and delicious 15-minute dinner idea with simple ingredients?",
-  },
-  {
-    label: "Explain a complex concept simply",
-    prompt: "Can you explain a complex concept in everyday, easy-to-understand terms?",
-  },
-];
 
 function clock(ts: number) {
   return new Date(ts).toLocaleTimeString([], {
@@ -159,8 +141,18 @@ function SimpleToolCard({ tool }: { tool: ToolExecution }) {
   );
 }
 
-function Turn({ message, viewMode }: { message: ChatMessage; viewMode: "simple" | "developer" }) {
+function Turn({
+  message,
+  viewMode,
+  currentPersona,
+}: {
+  message: ChatMessage;
+  viewMode: "simple" | "developer";
+  currentPersona: PersonaMode;
+}) {
   const isUser = message.role === "user";
+  const personaMode = message.persona ?? currentPersona;
+  const personaConfig = getPersonaConfig(personaMode);
 
   return (
     <Message from={message.role} className="max-w-full gap-2">
@@ -172,17 +164,26 @@ function Turn({ message, viewMode }: { message: ChatMessage; viewMode: "simple" 
         )}
       >
         {!isUser && (
-          <img
-            src={alieMark}
-            alt="Alie"
-            width={16}
-            height={16}
-            className="size-4 object-contain rounded dark:invert"
-          />
+          <AlieAvatar size="xs" persona={personaMode} status="idle" showEmojiBadge={false} />
         )}
-        <span className="font-medium text-foreground">
-          {isUser ? (message.transcribed ? "You (voice)" : "You") : "Alie"}
-        </span>
+        <div className="flex items-center gap-1.5">
+          <span className="font-medium text-foreground">
+            {isUser ? (message.transcribed ? "You (voice)" : "You") : "Alie"}
+          </span>
+          {!isUser && (
+            <span
+              className={cn(
+                "inline-flex items-center gap-1 rounded-full border px-1.5 py-0.2 text-[0.62rem] font-medium",
+                personaConfig.accentBg,
+                personaConfig.accentBorder,
+                personaConfig.accentText,
+              )}
+            >
+              <span>{personaConfig.emoji}</span>
+              <span>{personaConfig.shortName}</span>
+            </span>
+          )}
+        </div>
         <span className="text-[0.68rem] opacity-60">{clock(message.timestamp)}</span>
       </div>
 
@@ -255,10 +256,15 @@ export function ConversationPanel() {
     stopTalking,
     muted,
     toggleMuted,
+    persona,
+    setPersona,
   } = useAlie();
   const [draft, setDraft] = useState("");
   const busy = agentStatus === "thinking" || agentStatus === "executing_tool";
   const offline = connection !== "connected";
+
+  const personaConfig = getPersonaConfig(persona);
+  const timeGreeting = getGreetingForHour(persona);
 
   const currentSession = chatHistory.find((s) => s.id === activeSessionId);
   const currentTitle = currentSession?.title || "Conversation";
@@ -371,52 +377,127 @@ export function ConversationPanel() {
       <Conversation className="min-h-0 flex-1">
         <ConversationContent className="gap-4 p-4 sm:p-5">
           {messages.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-10 text-center">
-              {/* Clean Minimalist Hero */}
-              <div className="mb-3 flex size-9 items-center justify-center rounded-md border border-border/80 bg-card dark:bg-muted/80 shadow-xs">
-                <img
-                  src={alieMark}
-                  alt="Alie"
-                  width={24}
-                  height={24}
-                  className="size-4 object-contain dark:invert"
+            <div className="flex flex-col items-center justify-center py-8 sm:py-12 text-center max-w-lg mx-auto px-2">
+              {/* Living Alie Avatar */}
+              <div className="mb-4">
+                <AlieAvatar
+                  size="xl"
+                  persona={persona}
+                  status={agentStatus}
+                  showEmojiBadge={true}
                 />
               </div>
 
-              <h3 className="text-base font-semibold tracking-tight text-foreground">
-                How can I help you today?
-              </h3>
-              <p className="mt-1 max-w-sm text-xs leading-relaxed text-muted-foreground">
-                Type a message or tap the microphone to chat, manage your to-dos, or draft notes.
+              {/* Active Persona Badge Pill */}
+              <div
+                className={cn(
+                  "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium shadow-2xs mb-3 transition-colors",
+                  personaConfig.accentBg,
+                  personaConfig.accentBorder,
+                  personaConfig.accentText,
+                )}
+              >
+                <span>{personaConfig.emoji}</span>
+                <span className="font-semibold">{personaConfig.name}</span>
+                <span className="opacity-60 hidden sm:inline">· {personaConfig.tagline}</span>
+              </div>
+
+              {/* Time-of-day Contextual Greeting */}
+              <p className="text-xs font-medium text-muted-foreground mb-1 italic">
+                "{timeGreeting}"
               </p>
 
-              {/* Clean Prompt Starter Chips */}
-              <div className="mt-5 flex flex-wrap items-center justify-center gap-2 max-w-md">
-                {PROMPT_SUGGESTIONS.map((s, i) => (
+              {/* Persona Headline & Subtitle */}
+              <h3 className="text-base sm:text-lg font-bold tracking-tight text-foreground max-w-md">
+                {personaConfig.emptyStateHeadline}
+              </h3>
+              <p className="mt-1.5 max-w-sm text-xs leading-relaxed text-muted-foreground">
+                {personaConfig.emptyStateSubtitle}
+              </p>
+
+              {/* Quick Persona Vibe Selector */}
+              <div className="mt-4 flex items-center justify-center gap-1.5">
+                <span className="text-[0.68rem] text-muted-foreground mr-0.5">Switch vibe:</span>
+                {(["cozy", "candid", "zen"] as PersonaMode[]).map((mode) => {
+                  const p = getPersonaConfig(mode);
+                  const active = persona === mode;
+                  return (
+                    <button
+                      key={mode}
+                      type="button"
+                      onClick={() => setPersona(mode)}
+                      className={cn(
+                        "flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium transition-all active:scale-95",
+                        active
+                          ? cn(
+                              "border shadow-2xs font-semibold",
+                              p.accentBg,
+                              p.accentBorder,
+                              p.accentText,
+                            )
+                          : "border border-border/60 text-muted-foreground hover:bg-muted/80 hover:text-foreground",
+                      )}
+                    >
+                      <span>{p.emoji}</span>
+                      <span className="text-[0.68rem]">{p.shortName}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Persona-Curated Prompt Starters */}
+              <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-2 w-full max-w-md">
+                {personaConfig.promptSuggestions.map((s, i) => (
                   <button
                     key={i}
                     type="button"
                     disabled={offline}
                     onClick={() => sendText(s.prompt)}
-                    className="rounded-md border border-border/80 bg-card px-2.5 py-1 text-xs font-medium text-foreground transition-all hover:bg-muted hover:border-border active:scale-95 disabled:opacity-50"
+                    className="flex items-center gap-2.5 rounded-lg border border-border/80 bg-card/80 p-2.5 text-left text-xs font-medium text-foreground transition-all hover:bg-muted/80 hover:border-border hover:shadow-2xs active:scale-98 disabled:opacity-50"
                   >
-                    {s.label}
+                    <span className="text-base shrink-0">{s.emoji}</span>
+                    <span className="truncate leading-snug">{s.label}</span>
                   </button>
                 ))}
               </div>
             </div>
           ) : (
-            messages.map((m) => <Turn key={m.id} message={m} viewMode={viewMode} />)
+            messages.map((m) => (
+              <Turn key={m.id} message={m} viewMode={viewMode} currentPersona={persona} />
+            ))
           )}
 
           {busy && (
             <div className="flex items-center gap-2 rounded-md border border-border/70 bg-card px-3 py-2 text-xs text-muted-foreground w-fit shadow-xs">
               <span className="flex items-center gap-1">
-                <span className="size-1.5 rounded-full bg-signal animate-pulse [animation-delay:-0.3s]" />
-                <span className="size-1.5 rounded-full bg-signal animate-pulse [animation-delay:-0.15s]" />
-                <span className="size-1.5 rounded-full bg-signal animate-pulse" />
+                <span
+                  className={cn(
+                    "size-1.5 rounded-full animate-pulse [animation-delay:-0.3s]",
+                    persona === "cozy" && "bg-amber-500",
+                    persona === "candid" && "bg-violet-500",
+                    persona === "zen" && "bg-emerald-500",
+                  )}
+                />
+                <span
+                  className={cn(
+                    "size-1.5 rounded-full animate-pulse [animation-delay:-0.15s]",
+                    persona === "cozy" && "bg-amber-500",
+                    persona === "candid" && "bg-violet-500",
+                    persona === "zen" && "bg-emerald-500",
+                  )}
+                />
+                <span
+                  className={cn(
+                    "size-1.5 rounded-full animate-pulse",
+                    persona === "cozy" && "bg-amber-500",
+                    persona === "candid" && "bg-violet-500",
+                    persona === "zen" && "bg-emerald-500",
+                  )}
+                />
               </span>
-              <span className="text-[0.7rem] font-medium text-foreground ml-1">Working...</span>
+              <span className="text-[0.72rem] font-medium text-foreground ml-1">
+                {personaConfig.statusQuips.thinking}
+              </span>
             </div>
           )}
         </ConversationContent>

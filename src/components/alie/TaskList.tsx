@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Check, CheckCircle2, ListTodo, Plus, Trash2 } from "lucide-react";
+import { Check, CheckCircle2, ListTodo, Plus, Sparkles, Trash2, X } from "lucide-react";
 
 import { Panel } from "@/components/alie/Panel";
+import { getRandomCelebration } from "@/lib/alie/persona";
 import { useAlie } from "@/lib/alie/store";
 import { cn } from "@/lib/utils";
 import type { TaskPriority } from "@/lib/alie/types";
@@ -50,12 +51,26 @@ function formatTimeAgo(timestamp: number) {
 }
 
 export function TaskList() {
-  const { tasks, createTask, toggleTask, deleteTask, connection } = useAlie();
+  const { tasks, createTask, toggleTask, deleteTask, connection, persona } = useAlie();
   const [title, setTitle] = useState("");
   const [priority, setPriority] = useState<TaskPriority>("normal");
+  const [celebration, setCelebration] = useState<{ id: string; text: string } | null>(null);
   const offline = connection !== "connected";
   const openCount = tasks.filter((t) => t.status === "open").length;
   const doneCount = tasks.filter((t) => t.status === "done").length;
+
+  const handleToggle = (taskId: string, currentStatus: "open" | "done") => {
+    toggleTask(taskId);
+    if (currentStatus === "open") {
+      const quip = getRandomCelebration(persona);
+      setCelebration({ id: taskId, text: quip });
+      setTimeout(() => {
+        setCelebration((prev) => (prev?.id === taskId ? null : prev));
+      }, 5000);
+    } else {
+      setCelebration(null);
+    }
+  };
 
   return (
     <Panel
@@ -125,6 +140,35 @@ export function TaskList() {
         </button>
       </form>
 
+      {/* Persona Celebration Quip Banner on Task Completion */}
+      {celebration && (
+        <div
+          className={cn(
+            "flex items-center justify-between gap-2 border-b px-3.5 py-2 text-xs transition-all duration-300 animate-in fade-in slide-in-from-top-1",
+            persona === "cozy" &&
+              "border-amber-500/30 bg-amber-500/10 text-amber-900 dark:text-amber-200",
+            persona === "candid" &&
+              "border-violet-500/30 bg-violet-500/10 text-violet-900 dark:text-violet-200",
+            persona === "zen" &&
+              "border-emerald-500/30 bg-emerald-500/10 text-emerald-900 dark:text-emerald-200",
+          )}
+        >
+          <div className="flex items-center gap-2 min-w-0">
+            <Sparkles className="size-3.5 shrink-0 animate-spin [animation-duration:3s]" />
+            <span className="font-medium text-[0.72rem] truncate">{celebration.text}</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setCelebration(null)}
+            className="shrink-0 p-0.5 opacity-60 hover:opacity-100 transition-opacity"
+            title="Dismiss"
+            aria-label="Dismiss celebration"
+          >
+            <X className="size-3" />
+          </button>
+        </div>
+      )}
+
       {/* Task List Items */}
       <ul className="divide-y divide-border/50">
         {tasks.length === 0 && (
@@ -147,7 +191,7 @@ export function TaskList() {
             >
               <button
                 type="button"
-                onClick={() => toggleTask(task.id)}
+                onClick={() => handleToggle(task.id, task.status)}
                 className="flex min-w-0 flex-1 items-start gap-2.5 text-left outline-none focus-visible:ring-1 focus-visible:ring-signal/30 rounded py-0.5"
               >
                 {/* Checkbox Icon */}

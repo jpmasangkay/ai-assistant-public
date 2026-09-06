@@ -2,14 +2,15 @@ import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Clock, Loader2, Plus, Radio, Volume2 } from "lucide-react";
 
-import alieMark from "@/assets/alie-mark.png";
+import { AlieAvatar } from "@/components/alie/AlieAvatar";
 import { ChatHistoryDialog } from "@/components/alie/ChatHistoryDialog";
+import { PersonaSwitcher } from "@/components/alie/PersonaSwitcher";
 import { ThemeToggle } from "@/components/alie/ThemeToggle";
 import { useAlie } from "@/lib/alie/store";
 import { cn } from "@/lib/utils";
 
 export function HeaderBar() {
-  const { connection, agentStatus, newChat } = useAlie();
+  const { connection, agentStatus, newChat, persona } = useAlie();
   const [openHistory, setOpenHistory] = useState(false);
 
   const getStatusDisplay = () => {
@@ -68,21 +69,13 @@ export function HeaderBar() {
     <>
       <header className="sticky top-0 z-30 border-b border-border/70 bg-card/85 backdrop-blur-md">
         <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-2 sm:px-6">
-          {/* Brand identity */}
+          {/* Brand identity with living avatar */}
           <Link
             to="/"
-            className="flex items-center gap-2.5 transition-opacity hover:opacity-80"
+            className="flex items-center gap-2.5 transition-opacity hover:opacity-85"
             title="Back to home"
           >
-            <div className="flex size-7 items-center justify-center rounded-md bg-signal/10 border border-signal/20 dark:bg-muted/80 dark:border-border">
-              <img
-                src={alieMark}
-                alt="Alie"
-                width={28}
-                height={28}
-                className="size-4 object-contain dark:invert"
-              />
-            </div>
+            <AlieAvatar size="sm" persona={persona} status={agentStatus} showEmojiBadge={true} />
             <div>
               <span className="font-display text-sm font-semibold tracking-tight text-foreground">
                 Alie
@@ -90,11 +83,12 @@ export function HeaderBar() {
             </div>
           </Link>
 
-          {/* Center: Clean Status Indicator */}
-          <div className="order-3 flex items-center justify-center sm:order-2">
+          {/* Center: Persona Switcher & Status Indicator */}
+          <div className="order-3 flex items-center justify-center gap-2 sm:order-2">
+            <PersonaSwitcher />
             <div
               className={cn(
-                "inline-flex items-center gap-1.5 rounded-md border px-2 py-0.5 text-[0.7rem] font-medium transition-colors",
+                "hidden sm:inline-flex items-center gap-1.5 rounded-md border px-2 py-0.5 text-[0.7rem] font-medium transition-colors",
                 status.badgeClass,
               )}
             >

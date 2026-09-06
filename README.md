@@ -70,26 +70,26 @@ Alie is a full-stack, personal AI companion web application designed for real li
 
 ### Frontend & Application Layer
 
-| Technology | Purpose |
-|-----------|---------|
-| **React 19** | Modern component architecture with concurrent rendering and hooks |
-| **TypeScript 5** | Strict end-to-end type safety across the entire application |
-| **TanStack Start & Router** | Type-safe SSR framework with file-based routing and nested layout trees |
-| **TanStack React Query** | Asynchronous state management and client-side data synchronization |
-| **Tailwind CSS v4** | Next-generation utility-first styling with inline design system tokens (`@theme`) |
-| **Radix UI** | Accessible, unstyled primitives for dialogs, popovers, and accordions |
-| **Lucide React** | Consistent, minimalist iconography |
-| **Motion** | Fluid UI transitions and interactive micro-animations |
-| **Streamdown & Shiki** | Syntax-highlighted code blocks and markdown rendering |
+| Technology                  | Purpose                                                                           |
+| --------------------------- | --------------------------------------------------------------------------------- |
+| **React 19**                | Modern component architecture with concurrent rendering and hooks                 |
+| **TypeScript 5**            | Strict end-to-end type safety across the entire application                       |
+| **TanStack Start & Router** | Type-safe SSR framework with file-based routing and nested layout trees           |
+| **TanStack React Query**    | Asynchronous state management and client-side data synchronization                |
+| **Tailwind CSS v4**         | Next-generation utility-first styling with inline design system tokens (`@theme`) |
+| **Radix UI**                | Accessible, unstyled primitives for dialogs, popovers, and accordions             |
+| **Lucide React**            | Consistent, minimalist iconography                                                |
+| **Motion**                  | Fluid UI transitions and interactive micro-animations                             |
+| **Streamdown & Shiki**      | Syntax-highlighted code blocks and markdown rendering                             |
 
 ### Server & Tooling
 
-| Technology | Purpose |
-|-----------|---------|
-| **Vite 8** | High-performance build tool and hot module replacement (HMR) |
-| **Nitro** | Universal server engine for local dev, static builds, and edge deployments |
-| **ESLint 9 + Prettier** | Code quality enforcement, automated formatting, and style consistency |
-| **Web Speech API** | Browser-native speech recognition and audio recording capture |
+| Technology              | Purpose                                                                    |
+| ----------------------- | -------------------------------------------------------------------------- |
+| **Vite 8**              | High-performance build tool and hot module replacement (HMR)               |
+| **Nitro**               | Universal server engine for local dev, static builds, and edge deployments |
+| **ESLint 9 + Prettier** | Code quality enforcement, automated formatting, and style consistency      |
+| **Web Speech API**      | Browser-native speech recognition and audio recording capture              |
 
 ---
 
@@ -122,13 +122,13 @@ Open [http://localhost:8080](http://localhost:8080) (or the port indicated in yo
 
 ### Available Scripts
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Starts the Vite development server with hot module replacement |
-| `npm run build` | Compiles and builds production assets using Vite and Nitro |
-| `npm run preview` | Previews the production build locally |
-| `npm run lint` | Runs ESLint across all TypeScript and React files |
-| `npm run format` | Automatically formats the codebase with Prettier |
+| Command           | Description                                                    |
+| ----------------- | -------------------------------------------------------------- |
+| `npm run dev`     | Starts the Vite development server with hot module replacement |
+| `npm run build`   | Compiles and builds production assets using Vite and Nitro     |
+| `npm run preview` | Previews the production build locally                          |
+| `npm run lint`    | Runs ESLint across all TypeScript and React files              |
+| `npm run format`  | Automatically formats the codebase with Prettier               |
 
 ---
 

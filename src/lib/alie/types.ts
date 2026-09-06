@@ -1,3 +1,5 @@
+import type { PersonaMode } from "./persona";
+
 export type AgentStatus = "idle" | "listening" | "thinking" | "executing_tool" | "speaking";
 
 export type ConnectionState = "disconnected" | "connecting" | "connected" | "error";
@@ -24,6 +26,7 @@ export interface ChatMessage {
   tools: ToolExecution[];
   audioUrl?: string | undefined;
   transcribed?: boolean | undefined;
+  persona?: PersonaMode | undefined;
 }
 
 export interface ChatSession {
@@ -71,7 +74,7 @@ export interface ConnectionConfig {
 
 /** Server -> client socket events, matching the Alie backend protocol. */
 export type ServerEvent =
-  | { type: "agent_thinking"; messageId: string }
+  | { type: "agent_thinking"; messageId: string; persona?: PersonaMode }
   | {
       type: "tool_call_start";
       messageId: string;

@@ -15,7 +15,10 @@ import {
 import { useState } from "react";
 
 import alieMark from "@/assets/alie-mark.png";
+import { AlieAvatar } from "@/components/alie/AlieAvatar";
 import { ThemeToggle } from "@/components/alie/ThemeToggle";
+import { PERSONAS, type PersonaMode } from "@/lib/alie/persona";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -46,10 +49,11 @@ interface ScenarioTask {
   highlight?: boolean;
 }
 
-interface Scenario {
-  id: string;
+interface PersonaScenario {
+  id: PersonaMode;
   label: string;
   badge: string;
+  emoji: string;
   userMsg: string;
   alieMsg: React.ReactNode;
   inputPlaceholder: string;
@@ -58,85 +62,102 @@ interface Scenario {
   tip: string;
 }
 
+const PERSONA_SCENARIOS: Record<PersonaMode, PersonaScenario> = {
+  cozy: {
+    id: "cozy",
+    label: "Cozy Companion",
+    badge: "Warm & Gentle",
+    emoji: "☕",
+    userMsg:
+      "Good morning Alie! Feeling a bit scattered today. Can you help me plan my day with some breathing room?",
+    alieMsg: (
+      <>
+        <p>
+          Good morning! Grab a warm cup of coffee or tea—you don't have to rush through everything
+          today. ☕
+        </p>
+        <p className="text-muted-foreground">
+          I’ve shaped your day to stay calm: focus gently on your main project this morning, take
+          care of your dentist visit at <strong>2:30 PM</strong>, and pick up groceries on the route
+          home.
+        </p>
+      </>
+    ),
+    inputPlaceholder: '"Suggest a comforting 15-minute dinner..."',
+    tasksRemaining: "2 of 3 gentle items",
+    tasks: [
+      { text: "Morning tea & gentle stretch", done: true, tag: null, highlight: false },
+      { text: "Dentist checkup", done: false, tag: "2:30 PM", highlight: true },
+      { text: "Pick up fresh groceries", done: false, tag: "Comfort errand", highlight: false },
+    ],
+    tip: "Take 10 minutes of quiet space after your appointment before running your errands.",
+  },
+  candid: {
+    id: "candid",
+    label: "Candid Co-Pilot",
+    badge: "Sharp & Direct",
+    emoji: "⚡",
+    userMsg:
+      "Hey Alie, got a flooded inbox and 3 big deliverables today. Give me the high-impact battle plan.",
+    alieMsg: (
+      <>
+        <p>Here's the bottom line: kill the busywork and lock in two dedicated focus sprints. ⚡</p>
+        <p className="text-muted-foreground">
+          Block 1 (<strong>10:00 AM - 11:30 AM</strong>): Ship the client proposal while your energy
+          is peak. Block 2 (<strong>2:00 PM</strong>): Knock down the 3 blocker emails and archive
+          the noise. Hard stop at 5:00 PM.
+        </p>
+      </>
+    ),
+    inputPlaceholder: '"Draft a punchy, 3-sentence follow-up..."',
+    tasksRemaining: "2 high-impact targets",
+    tasks: [
+      { text: "Ship Q3 client proposal", done: false, tag: "High Impact", highlight: true },
+      { text: "Sprint through 3 inbox blockers", done: false, tag: "2:00 PM", highlight: false },
+      { text: "Archive low-priority threads", done: true, tag: "Done", highlight: false },
+    ],
+    tip: "If an email takes under 2 minutes, kill it right away. Otherwise, defer or delegate.",
+  },
+  zen: {
+    id: "zen",
+    label: "Zen Anchor",
+    badge: "Mindful & Grounded",
+    emoji: "🌿",
+    userMsg: "My mind is spinning from nonstop multitasking. How do I regain clarity right now?",
+    alieMsg: (
+      <>
+        <p>
+          Pause right here for three conscious breaths. Let your shoulders drop away from your ears.
+          🌿
+        </p>
+        <p className="text-muted-foreground">
+          Multitasking is simply scattered attention. Today, let's honor only{" "}
+          <strong>one single core intention</strong>: give your complete presence to your writing
+          project, and allow tomorrow to hold the rest.
+        </p>
+      </>
+    ),
+    inputPlaceholder: '"Guide me through a 2-minute breath reset..."',
+    tasksRemaining: "1 centered intention",
+    tasks: [
+      {
+        text: "3 conscious breaths before starting",
+        done: true,
+        tag: "Centered",
+        highlight: false,
+      },
+      { text: "Single-task core writing project", done: false, tag: "Deep focus", highlight: true },
+      { text: "Evening screen-free reflection", done: false, tag: "8:00 PM", highlight: false },
+    ],
+    tip: "Notice when your thoughts race ahead. Bring your awareness back to your hands and your breath.",
+  },
+};
+
 function LandingPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const [activeScenario, setActiveScenario] = useState<number>(0);
+  const [activePersona, setActivePersona] = useState<PersonaMode>("cozy");
 
-  const scenarios: Scenario[] = [
-    {
-      id: "morning",
-      label: "Morning Planning",
-      badge: "Voice or Text",
-      userMsg:
-        "Good morning! Can you help me sort out my day? I have a dentist appointment and need to buy groceries.",
-      alieMsg: (
-        <>
-          <p>Good morning! I’ve scheduled your day to keep things calm.</p>
-          <p className="text-muted-foreground">
-            Your dentist visit is at <strong>2:30 PM</strong>, so I’d suggest grabbing groceries
-            around <strong>4:00 PM</strong> on your way home. Would you like me to set a reminder 30
-            minutes before?
-          </p>
-        </>
-      ),
-      inputPlaceholder: '"Remind me to grab the receipt..."',
-      tasksRemaining: "2 of 3 remaining",
-      tasks: [
-        { text: "Morning stretch & coffee", done: true, tag: null, highlight: false },
-        { text: "Dentist checkup", done: false, tag: "2:30 PM", highlight: true },
-        { text: "Pick up groceries", done: false, tag: "High priority", highlight: false },
-      ],
-      tip: "Take a 10-minute breath after your appointment before running to the store.",
-    },
-    {
-      id: "voice",
-      label: "Hands-Free Voice",
-      badge: "Spoken Audio",
-      userMsg: "Hey Alie, add sourdough bread, olive oil, and coffee beans to my errand list.",
-      alieMsg: (
-        <>
-          <p>Added all three to your errands list!</p>
-          <p className="text-muted-foreground">
-            Since you're passing by the local market after work, you can pick them up in a single
-            stop. I've grouped them under your groceries checklist.
-          </p>
-        </>
-      ),
-      inputPlaceholder: '"Also add paper towels to that list..."',
-      tasksRemaining: "3 new items added",
-      tasks: [
-        { text: "Buy sourdough bread", done: false, tag: "Grocery", highlight: true },
-        { text: "Pick up olive oil", done: false, tag: "Grocery", highlight: false },
-        { text: "Get whole coffee beans", done: false, tag: "Grocery", highlight: false },
-      ],
-      tip: "You can use your voice anytime hands-free while cooking or driving.",
-    },
-    {
-      id: "evening",
-      label: "Evening Wind-Down",
-      badge: "Calm Reflection",
-      userMsg: "Let's review what we finished today and prep tomorrow with zero stress.",
-      alieMsg: (
-        <>
-          <p>You completed 4 important tasks today!</p>
-          <p className="text-muted-foreground">
-            The dentist visit and groceries are done. Tomorrow only has 1 morning meeting, so your
-            afternoon is completely open. Rest easy tonight.
-          </p>
-        </>
-      ),
-      inputPlaceholder: '"What time is my first call tomorrow?"',
-      tasksRemaining: "All done for today!",
-      tasks: [
-        { text: "Dentist appointment", done: true, tag: "Completed", highlight: false },
-        { text: "Grocery shopping", done: true, tag: "Completed", highlight: false },
-        { text: "Clean kitchen counters", done: true, tag: "Completed", highlight: false },
-      ],
-      tip: "A clear desk and 10 minutes of screen-free winding down helps you wake up refreshed.",
-    },
-  ];
-
-  const currentScenario: Scenario = scenarios[activeScenario] ?? scenarios[0]!;
+  const currentScenario = PERSONA_SCENARIOS[activePersona];
 
   const toggleFaq = (idx: number) => {
     setOpenFaq(openFaq === idx ? null : idx);
@@ -165,6 +186,12 @@ function LandingPage() {
 
           {/* Center Links (Desktop) */}
           <nav className="hidden items-center gap-7 text-xs font-medium text-muted-foreground sm:flex">
+            <a
+              href="#personas"
+              className="transition-colors hover:text-foreground font-semibold text-foreground/80"
+            >
+              Personalities
+            </a>
             <a href="#features" className="transition-colors hover:text-foreground">
               Features
             </a>
@@ -257,52 +284,63 @@ function LandingPage() {
 
         {/* Product UI Mockup / Interactive Demonstration */}
         <div className="mx-auto mt-12 max-w-5xl">
-          {/* Interactive Scenario Switcher Pills */}
+          {/* Interactive Persona Vibe Switcher Pills */}
           <div className="mb-4 flex flex-wrap items-center justify-center gap-2">
-            <span className="text-xs font-medium text-muted-foreground mr-1 hidden sm:inline">
-              Try a scenario:
+            <span className="text-xs font-semibold text-foreground mr-1 hidden sm:inline">
+              Choose Alie's Vibe:
             </span>
-            {scenarios.map((sc, idx) => (
-              <button
-                key={sc.id}
-                type="button"
-                onClick={() => setActiveScenario(idx)}
-                className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium transition-all ${
-                  activeScenario === idx
-                    ? "bg-foreground text-background shadow-xs ring-2 ring-signal/30"
-                    : "border border-border/80 bg-card text-muted-foreground hover:bg-muted hover:text-foreground"
-                }`}
-              >
-                <span>{sc.label}</span>
-                <span
-                  className={`text-[10px] rounded-full px-1.5 py-0.2 ${
-                    activeScenario === idx
-                      ? "bg-background/20 text-background"
-                      : "bg-muted text-muted-foreground"
-                  }`}
+            {(["cozy", "candid", "zen"] as PersonaMode[]).map((mode) => {
+              const sc = PERSONA_SCENARIOS[mode];
+              const p = PERSONAS[mode];
+              const active = activePersona === mode;
+              return (
+                <button
+                  key={mode}
+                  type="button"
+                  onClick={() => setActivePersona(mode)}
+                  className={cn(
+                    "flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium transition-all cursor-pointer select-none",
+                    active
+                      ? cn(
+                          "shadow-xs ring-2 ring-foreground/20 font-semibold",
+                          p.accentBg,
+                          p.accentBorder,
+                          p.accentText,
+                          "border",
+                        )
+                      : "border border-border/80 bg-card text-muted-foreground hover:bg-muted hover:text-foreground",
+                  )}
                 >
-                  {sc.badge}
-                </span>
-              </button>
-            ))}
+                  <span>{sc.emoji}</span>
+                  <span>{sc.label}</span>
+                  <span
+                    className={cn(
+                      "text-[10px] rounded-full px-1.5 py-0.2",
+                      active
+                        ? "bg-foreground/10 text-foreground"
+                        : "bg-muted text-muted-foreground",
+                    )}
+                  >
+                    {sc.badge}
+                  </span>
+                </button>
+              );
+            })}
           </div>
 
           <div className="overflow-hidden rounded-lg border border-border/80 bg-card shadow-lg transition-all">
             {/* Window header */}
             <div className="flex items-center justify-between border-b border-border/70 bg-muted/40 px-4 py-2.5">
-              <div className="flex items-center gap-2">
-                <div className="flex size-6 items-center justify-center rounded-md border border-signal/20 bg-signal/10 dark:border-border">
-                  <img
-                    src={alieMark}
-                    alt="Alie"
-                    width={20}
-                    height={20}
-                    className="size-3.5 object-contain dark:invert"
-                  />
-                </div>
-                <span className="text-xs font-semibold text-foreground">Alie Daily Assistant</span>
+              <div className="flex items-center gap-2.5">
+                <AlieAvatar
+                  size="xs"
+                  persona={activePersona}
+                  status="speaking"
+                  showEmojiBadge={true}
+                />
+                <span className="text-xs font-semibold text-foreground">Alie Companion</span>
                 <span className="hidden text-[11px] text-muted-foreground sm:inline">
-                  · Live Interactive Preview
+                  · {PERSONAS[activePersona].name} Mode
                 </span>
               </div>
               <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
@@ -325,10 +363,26 @@ function LandingPage() {
 
                   {/* Alie response */}
                   <div className="flex justify-start gap-3">
-                    <div className="flex size-7 shrink-0 items-center justify-center rounded-md border border-signal/20 bg-signal/10 text-xs font-semibold text-signal dark:border-border dark:bg-muted dark:text-foreground">
-                      A
-                    </div>
+                    <AlieAvatar
+                      size="sm"
+                      persona={activePersona}
+                      status="speaking"
+                      showEmojiBadge={false}
+                    />
                     <div className="max-w-md space-y-2 rounded-lg border border-border/70 bg-background px-4 py-3 text-xs text-foreground shadow-xs leading-relaxed">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-semibold text-xs text-foreground">Alie</span>
+                        <span
+                          className={cn(
+                            "rounded-full px-1.5 py-0.2 text-[10px] font-medium border",
+                            PERSONAS[activePersona].accentBg,
+                            PERSONAS[activePersona].accentBorder,
+                            PERSONAS[activePersona].accentText,
+                          )}
+                        >
+                          {PERSONAS[activePersona].emoji} {PERSONAS[activePersona].shortName}
+                        </span>
+                      </div>
                       {currentScenario.alieMsg}
                     </div>
                   </div>
@@ -396,6 +450,159 @@ function LandingPage() {
                   <span className="font-semibold text-foreground">Alie's Tip:</span>{" "}
                   {currentScenario.tip}
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Persona Showcase Section: Three Personalities, Zero Generic AI Clichés */}
+      <section
+        id="personas"
+        className="border-t border-border/70 bg-gradient-to-b from-muted/30 via-background to-card/30 py-20 px-4 sm:px-6 lg:px-8"
+      >
+        <div className="mx-auto max-w-5xl">
+          <div className="text-center max-w-3xl mx-auto">
+            <div className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-card px-3.5 py-1 text-xs font-semibold text-foreground shadow-2xs mb-3">
+              <Sparkles className="size-3.5 text-signal" />
+              <span>Adaptive Personality Engine</span>
+            </div>
+            <h2 className="font-display text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+              Three distinct companions. Zero robotic corporate tone.
+            </h2>
+            <p className="mt-3 text-sm text-muted-foreground sm:text-base leading-relaxed">
+              Most AIs sound like an eager customer support script. Alie adapts to how you want to
+              feel: comforted over morning tea, laser-focused on deadlines, or grounded in mindful
+              calm.
+            </p>
+          </div>
+
+          <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
+            {/* Card 1: Cozy */}
+            <div
+              onClick={() => setActivePersona("cozy")}
+              className={cn(
+                "relative cursor-pointer rounded-xl border p-6 transition-all duration-300 backdrop-blur-md shadow-xs flex flex-col justify-between select-none",
+                activePersona === "cozy"
+                  ? "border-amber-500/50 bg-amber-500/10 dark:bg-amber-500/15 shadow-md scale-[1.02] ring-2 ring-amber-500/30"
+                  : "border-border/80 bg-card/70 hover:border-amber-500/30 hover:bg-card",
+              )}
+            >
+              <div>
+                <div className="flex items-center justify-between">
+                  <AlieAvatar
+                    size="md"
+                    persona="cozy"
+                    status={activePersona === "cozy" ? "speaking" : "idle"}
+                  />
+                  <span className="rounded-full border border-amber-500/30 bg-amber-500/15 px-2.5 py-0.5 text-xs font-medium text-amber-800 dark:text-amber-200">
+                    ☕ Cozy Mode
+                  </span>
+                </div>
+                <h3 className="mt-4 font-display text-base font-bold text-foreground">
+                  Warm & Supportive
+                </h3>
+                <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+                  Feels like catching up with a kind friend over tea. Thoughtful check-ins, soothing
+                  pacing, comforting 15-minute recipes, and encouraging task celebrations.
+                </p>
+
+                <div className="mt-4 rounded-lg border border-border/60 bg-background/80 p-3 text-[11px] text-muted-foreground italic">
+                  "Take a slow breath and sip your warm drink. We'll handle today's errands one
+                  gentle step at a time."
+                </div>
+              </div>
+
+              <div className="mt-5 flex items-center justify-between text-xs font-medium">
+                <span className="text-[11px] text-amber-700 dark:text-amber-300">
+                  {activePersona === "cozy" ? "✓ Active in preview" : "Click to preview vibe"}
+                </span>
+                <span className="size-2 rounded-full bg-amber-500" />
+              </div>
+            </div>
+
+            {/* Card 2: Candid */}
+            <div
+              onClick={() => setActivePersona("candid")}
+              className={cn(
+                "relative cursor-pointer rounded-xl border p-6 transition-all duration-300 backdrop-blur-md shadow-xs flex flex-col justify-between select-none",
+                activePersona === "candid"
+                  ? "border-violet-500/50 bg-violet-500/10 dark:bg-violet-500/15 shadow-md scale-[1.02] ring-2 ring-violet-500/30"
+                  : "border-border/80 bg-card/70 hover:border-violet-500/30 hover:bg-card",
+              )}
+            >
+              <div>
+                <div className="flex items-center justify-between">
+                  <AlieAvatar
+                    size="md"
+                    persona="candid"
+                    status={activePersona === "candid" ? "speaking" : "idle"}
+                  />
+                  <span className="rounded-full border border-violet-500/30 bg-violet-500/15 px-2.5 py-0.5 text-xs font-medium text-violet-800 dark:text-violet-200">
+                    ⚡ Candid Mode
+                  </span>
+                </div>
+                <h3 className="mt-4 font-display text-base font-bold text-foreground">
+                  Sharp & Playful
+                </h3>
+                <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+                  Zero corporate filler. Straight-talking advice, high-impact focus blocks, punchy
+                  draft emails, and witty momentum to check off your biggest hurdles.
+                </p>
+
+                <div className="mt-4 rounded-lg border border-border/60 bg-background/80 p-3 text-[11px] text-muted-foreground italic">
+                  "No fluff: knock down the hardest task before lunch, archive the noise, and shut
+                  the laptop at 5."
+                </div>
+              </div>
+
+              <div className="mt-5 flex items-center justify-between text-xs font-medium">
+                <span className="text-[11px] text-violet-700 dark:text-violet-300">
+                  {activePersona === "candid" ? "✓ Active in preview" : "Click to preview vibe"}
+                </span>
+                <span className="size-2 rounded-full bg-violet-500" />
+              </div>
+            </div>
+
+            {/* Card 3: Zen */}
+            <div
+              onClick={() => setActivePersona("zen")}
+              className={cn(
+                "relative cursor-pointer rounded-xl border p-6 transition-all duration-300 backdrop-blur-md shadow-xs flex flex-col justify-between select-none",
+                activePersona === "zen"
+                  ? "border-emerald-500/50 bg-emerald-500/10 dark:bg-emerald-500/15 shadow-md scale-[1.02] ring-2 ring-emerald-500/30"
+                  : "border-border/80 bg-card/70 hover:border-emerald-500/30 hover:bg-card",
+              )}
+            >
+              <div>
+                <div className="flex items-center justify-between">
+                  <AlieAvatar
+                    size="md"
+                    persona="zen"
+                    status={activePersona === "zen" ? "speaking" : "idle"}
+                  />
+                  <span className="rounded-full border border-emerald-500/30 bg-emerald-500/15 px-2.5 py-0.5 text-xs font-medium text-emerald-800 dark:text-emerald-200">
+                    🌿 Zen Mode
+                  </span>
+                </div>
+                <h3 className="mt-4 font-display text-base font-bold text-foreground">
+                  Mindful & Grounded
+                </h3>
+                <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+                  Spacious clarity when life feels hurried. 2-minute breathwork check-ins,
+                  single-tasking serenity, peaceful boundary notes, and evening release rituals.
+                </p>
+
+                <div className="mt-4 rounded-lg border border-border/60 bg-background/80 p-3 text-[11px] text-muted-foreground italic">
+                  "Honor one intention with presence. The mind can only walk one step at a time."
+                </div>
+              </div>
+
+              <div className="mt-5 flex items-center justify-between text-xs font-medium">
+                <span className="text-[11px] text-emerald-700 dark:text-emerald-300">
+                  {activePersona === "zen" ? "✓ Active in preview" : "Click to preview vibe"}
+                </span>
+                <span className="size-2 rounded-full bg-emerald-500" />
               </div>
             </div>
           </div>

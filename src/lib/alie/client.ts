@@ -6,6 +6,7 @@ import type {
   SystemStats,
   Task,
 } from "./types";
+import type { PersonaMode } from "./persona";
 
 type Listener = (event: ServerEvent) => void;
 type StateListener = (state: ConnectionState, detail?: string) => void;
@@ -69,92 +70,275 @@ interface Script {
   reply: string;
 }
 
-function scriptFor(prompt: string, currentTasks: Task[] = []): Script {
+function scriptFor(
+  prompt: string,
+  currentTasks: Task[] = [],
+  persona: PersonaMode = "cozy",
+): Script {
   const p = prompt.toLowerCase();
 
-  if (/(email|letter|draft|write to|message|reply)/.test(p)) {
+  // 1. Email / Letter / Draft / Writing
+  if (/(email|letter|draft|write to|message|reply|boundary|note)/.test(p)) {
+    if (persona === "candid") {
+      return {
+        tool: {
+          name: "writingAssistant",
+          input: { task: "draft_message", persona: "candid", tone: "crisp & direct" },
+          terminal: ["Alie: stripping fluff... drafting high-clarity reply"],
+          output: "Punchy draft prepared",
+        },
+        reply:
+          'Here\'s a crisp, direct draft—no filler, straight to the point:\n\n"Hi [Name],\n\nQuick follow-up on [Topic]. Let me know by Thursday if the proposed timing works, or drop your best alternative window.\n\nBest,\n[Your Name]"\n\nClear, respectful of their inbox time, and gets a fast decision. Want me to punch it up or trim further? ⚡',
+      };
+    }
+
+    if (persona === "zen") {
+      return {
+        tool: {
+          name: "writingAssistant",
+          input: { task: "draft_message", persona: "zen", tone: "calm & mindful" },
+          terminal: ["Alie: crafting spacious, mindful communication..."],
+          output: "Harmonious draft prepared",
+        },
+        reply:
+          'Here is a centered, respectful message with clear boundaries:\n\n"Dear [Name],\n\nI hope your week is flowing with ease. I wanted to follow up gently on our upcoming conversation. Take your time to review, and please let me know what timing feels most sustainable for your schedule.\n\nWith care,\n[Your Name]"\n\nSpacious, polite, and protects everyone\'s peace of mind. 🌿',
+      };
+    }
+
+    // Cozy (default)
     return {
       tool: {
         name: "writingAssistant",
-        input: { task: "draft_message", tone: "warm and clear" },
-        terminal: ["Alie: drafting a thoughtful, friendly message..."],
+        input: { task: "draft_message", persona: "cozy", tone: "warm & thoughtful" },
+        terminal: ["Alie: brewing a warm, friendly message draft..."],
         output: "Friendly draft prepared",
       },
       reply:
-        "Here is a thoughtful message draft you can copy or adapt:\n\n\"Hi there,\n\nI hope you're having a wonderful week! I wanted to follow up quickly regarding our plans and make sure the timing still works smoothly for you. Please let me know if you'd like to adjust anything.\n\nWarm regards,\n[Your Name]\"\n\nLet me know if you'd like it to sound more casual, concise, or enthusiastic!",
+        "Here is a warm, thoughtful message draft you can adapt:\n\n\"Hi [Name],\n\nI hope you're having a wonderful week! I wanted to follow up quickly regarding our plans and make sure the timing still works smoothly for you. Please let me know if you'd like to adjust anything.\n\nWarm regards,\n[Your Name]\"\n\nLet me know if you'd like me to soften it or add any personal touch! ☕",
     };
   }
 
+  // 2. Recipe / Dinner / Food / Meal
   if (/(recipe|dinner|lunch|cook|meal|food|eat|hungry|breakfast)/.test(p)) {
+    if (persona === "candid") {
+      return {
+        reply:
+          "Zero-fuss, 12-minute skillet: Crispy Lemon Garlic Protein Scramble & Charred Greens 🍳\n\nIngredients:\n• 3 eggs (or cubed firm tofu)\n• 1 tbsp olive oil or butter\n• 2 cloves minced garlic + red pepper flakes\n• 2 handfuls baby spinach\n• Squeeze of fresh lemon + toasted sourdough\n\nPlaybook:\n1. Skillet on medium-high. Olive oil + garlic + chili flakes for 30 seconds.\n2. Toss in greens until wilted (under 90 seconds).\n3. Crack eggs right in, scramble fast, finish with sea salt & lemon squeeze.\n4. Dump onto crusty toast. Done in 10 minutes flat, one pan to wash. ⚡",
+      };
+    }
+
+    if (persona === "zen") {
+      return {
+        reply:
+          "A nourishing, mindful grain bowl: Steamed Edamame & Sesame Brown Rice with Ginger Miso Greens 🍵\n\nIngredients:\n• 1 cup warm brown rice or quinoa\n• ½ cup steamed edamame or chickpeas\n• 1 crisp cucumber, sliced thin\n• Tender greens dressed with 1 tsp toasted sesame oil & lemon\n• Sprinkle of toasted sesame seeds\n\nMindful Ritual:\n1. Center the warm grains in your favorite ceramic bowl.\n2. Arrange the cool cucumber, vibrant greens, and edamame side by side.\n3. Lightly drizzle sesame oil and tamari.\n4. Take three slow breaths before eating, savoring the crispness and quiet nourishment. 🌿",
+      };
+    }
+
+    // Cozy (default)
     return {
       reply:
-        "Here's a fast, delicious 15-minute idea: Garlic & Lemon Herb Pasta with Fresh Greens!\n\nIngredients:\n• Your favorite pasta\n• 2-3 cloves garlic (thinly sliced)\n• Olive oil, lemon juice, and parmesan\n• A handful of fresh spinach or arugula\n\nSteps:\n1. Boil pasta in salted water until al dente.\n2. In a pan, gently warm olive oil and sliced garlic for 1 minute until fragrant.\n3. Toss in the pasta, a splash of cooking water, and greens until wilted.\n4. Finish with a squeeze of fresh lemon and parmesan. Enjoy!",
+        "Here's a cozy, comforting 15-minute favorite: Warm Garlic & Lemon Butter Herb Pasta with Fresh Greens 🍲\n\nIngredients:\n• Your favorite pasta (penne or fettuccine)\n• 3 cloves garlic (sliced thin)\n• Good butter & olive oil, fresh lemon juice\n• Fresh baby spinach or arugula\n• Grated parmesan cheese\n\nSteps:\n1. Boil pasta in generously salted water until tender.\n2. In a warm pan, gently melt butter with olive oil and let sliced garlic sizzle gently until golden and fragrant.\n3. Toss in pasta with 2 tbsp of pasta water and greens until softly wilted.\n4. Finish with a squeeze of fresh lemon and lots of parmesan. Enjoy warm! ☕",
     };
   }
 
+  // 3. Plan / Schedule / Routine / Day
   if (/(plan|day|schedule|routine|morning|evening|organize my day)/.test(p)) {
+    if (persona === "candid") {
+      return {
+        reply:
+          "Here is a high-leverage 3-block focus framework that ships results without burnout: ⚡\n\n• Block 1: Deep Impact (9:00 - 11:30 AM) — Attack your single hardest task first while your brain is at 100%. Mute notifications.\n• Block 2: Quick Ops (1:00 - 2:30 PM) — Sprint through inbox, messages, and admin to-dos.\n• Block 3: Wrap & Ship (3:30 - 4:45 PM) — Review deliverables, log progress, clear desks.\n• Hard Stop (5:00 PM): Close laptop. Step away.\n\nWant me to lock down your #1 priority task right now?",
+      };
+    }
+
+    if (persona === "zen") {
+      return {
+        reply:
+          "A mindful daily rhythm anchored in spacious single-tasking: 🌿\n\n• Morning Stillness (8:30 - 9:00 AM): 5 minutes of conscious breath and gentle stretching before looking at any screen.\n• Single Intention (9:00 - 11:30 AM): Devote your energy to one core project with complete presence. No multitasking.\n• Midday Grounding (12:00 - 1:30 PM): Nourish your body, feel your feet on the earth, and take a slow walk.\n• Gentle Flow (2:00 - 4:30 PM): Attend to practical necessities with calm attention.\n• Evening Release: Acknowledge what was done today, and leave the rest in peace.\n\nWhat single intention feels most grounding for you right now?",
+      };
+    }
+
+    // Cozy (default)
     return {
       reply:
-        "Here is a calm, balanced plan for your day:\n\n• Morning (9:00 - 11:30 AM): Focus on your top priority task while your mind is fresh.\n• Midday (12:00 - 1:30 PM): Enjoy a wholesome meal and take a short walk away from screens.\n• Afternoon (2:00 - 4:30 PM): Tackle errands, reply to messages, and tick off quick to-do items.\n• Evening: Unwind, cook something good, and relax!\n\nWould you like me to add any specific reminder to your to-do list?",
+        "Here is a calm, supportive rhythm for your day: ☕\n\n• Morning (9:00 - 11:30 AM): Focus softly on your top priority task while enjoying a warm drink.\n• Midday (12:00 - 1:30 PM): Enjoy a wholesome lunch and take a gentle stroll away from screens.\n• Afternoon (2:00 - 4:30 PM): Tackle errands, reply to messages, and check off easy to-dos.\n• Evening: Unwind completely, light a warm lamp, and relax!\n\nWould you like me to tuck any of these into your to-do checklist?",
     };
   }
 
+  // 4. Tasks / Todo / Checklist
   if (/(task|todo|remind|list|grocery|groceries|checklist)/.test(p)) {
     const open = currentTasks.filter((t) => t.status === "open");
     if (currentTasks.length === 0) {
+      if (persona === "candid") {
+        return {
+          reply:
+            "Your board is squeaky clean—zero active tasks! Drop one in or speak it, and let's get after it. ⚡",
+        };
+      }
+      if (persona === "zen") {
+        return {
+          reply:
+            "Your list is completely clear right now. Enjoy the open space, or share an intention whenever you feel called. 🌿",
+        };
+      }
       return {
         reply:
-          "Your to-do list is currently empty! You can type a task above or tell me what to remember, and I'll add it for you.",
+          "Your to-do list is empty right now! Tell me what's on your mind, and I'll keep track of it for you. ☕",
       };
     }
+
+    const taskLines = open.map((t) => `• ${t.title} (${t.priority})`).join("\n");
+
+    if (persona === "candid") {
+      const summary =
+        open.length > 0
+          ? `Here's what's on deck (${open.length} active item${open.length === 1 ? "" : "s"}):\n\n${taskLines}\n\nWhich one are we knocking down first? ⚡`
+          : "All tasks checked off! Mission complete. 🎯 Ready to add more or enjoy the win?";
+
+      return {
+        tool: {
+          name: "taskManager",
+          input: { action: "list", persona: "candid", status: "open" },
+          terminal: ["Alie: syncing active mission board..."],
+          output: `${open.length} active items found`,
+        },
+        reply: summary,
+      };
+    }
+
+    if (persona === "zen") {
+      const summary =
+        open.length > 0
+          ? `Here are the commitments resting in your space (${open.length} active item${open.length === 1 ? "" : "s"}):\n\n${taskLines}\n\nRemember: only one step is taken at a time. What would you like to give your presence to? 🌿`
+          : "All items have been brought to completion. Beautiful space has opened up. 🌿";
+
+      return {
+        tool: {
+          name: "taskManager",
+          input: { action: "list", persona: "zen", status: "open" },
+          terminal: ["Alie: mindfully gathering open intentions..."],
+          output: `${open.length} intentions found`,
+        },
+        reply: summary,
+      };
+    }
+
+    // Cozy
     const summary =
       open.length > 0
-        ? `You have ${open.length} active task${open.length === 1 ? "" : "s"} on your list:\n\n` +
-          open.map((t) => `• ${t.title} (${t.priority})`).join("\n") +
-          "\n\nLet me know if you'd like me to add a new task or remove one!"
-        : "All your tasks are marked as done! 🎉 Let me know if you want to add new ones or clear the list.";
+        ? `You have ${open.length} active to-do${open.length === 1 ? "" : "s"} on your gentle list:\n\n${taskLines}\n\nTake them one at a time. You're doing great! Let me know if you want to add or adjust anything. ☕`
+        : "All your tasks are marked as done! 🎉 Savor this moment of calm.";
 
     return {
       tool: {
         name: "taskManager",
-        input: { action: "list", status: "open" },
-        terminal: ["Alie: checking your active to-do items..."],
+        input: { action: "list", persona: "cozy", status: "open" },
+        terminal: ["Alie: checking in on your daily to-dos..."],
         output: `${open.length} active to-dos found`,
       },
       reply: summary,
     };
   }
 
+  // 5. Explain / Learn / Teach
   if (/(explain|how does|what is|why do|concept|simple terms|teach me)/.test(p)) {
+    if (persona === "candid") {
+      return {
+        reply:
+          "Bottom line up front: think of it like an airport luggage carousel. ⚡\n\nInstead of searching every single plane cargo hold, everything funnels through one structured conveyor. You wait in one spot and grab your bag the moment it arrives.\n\nComplexity drops to zero when you isolate the core bottleneck. What specific angle do you want broken down?",
+      };
+    }
+
+    if (persona === "zen") {
+      return {
+        reply:
+          "Picture a still mountain pond. 🌿\n\nWhen water is turbulent, you cannot see the riverbed below. But when the ripples settle, every stone and ripple of sand becomes effortless to see.\n\nAny complex idea works the same way: remove the unnecessary noise, return to the first principle, and the truth naturally clarifies itself.",
+      };
+    }
+
+    // Cozy
     return {
       reply:
-        "Here is an easy way to picture it:\n\nImagine organizing a kitchen pantry. Instead of tossing everything into one random pile, you group items into clean, labeled bins. Whenever you need an ingredient, you find it instantly without stress.\n\nThat same principle applies to any complex concept: breaking big ideas into simple, intuitive pieces makes them effortless to understand!",
+        "Here is a lovely way to picture it: ☕\n\nImagine organizing a cozy kitchen pantry. Instead of tossing everything into one giant cardboard box, you place dried herbs in small glass jars with handwritten labels. Whenever you cook, your hand finds the right spice without any stress.\n\nBreaking big concepts into simple, familiar metaphors makes them feel right at home in your mind!",
     };
   }
 
-  if (/(what can you do|capabilities|how do you work|guide|who are you|help)/.test(p)) {
+  // 6. Capabilities / Who are you
+  if (
+    /(what can you do|capabilities|how do you work|guide|who are you|help|vibe|persona)/.test(p)
+  ) {
+    if (persona === "candid") {
+      return {
+        reply:
+          "I'm Alie in Candid mode ⚡ — your sharp, zero-fluff co-pilot.\n\nHere's what I do best:\n• Cut through cognitive clutter and establish ruthless daily priorities\n• Draft punchy emails and concise messages that get immediate answers\n• Track your to-dos and keep momentum moving\n• Brainstorm and stress-test ideas with honest feedback\n\nWhat are we tackling today?",
+      };
+    }
+
+    if (persona === "zen") {
+      return {
+        reply:
+          "I am Alie in Zen mode 🌿 — your mindful anchor for calm clarity.\n\nI am here to:\n• Cultivate calm, intentional daily rhythms with breathing room\n• Guide simple 2-minute breathwork and mindfulness resets\n• Help you single-task and release mental overwhelm\n• Draft peaceful, boundary-respecting messages\n\nHow may I support your peace of mind right now?",
+      };
+    }
+
+    // Cozy
     return {
       reply:
-        "I'm Alie, your daily AI companion! I'm here to:\n\n• Help plan your day, routines, and reminders\n• Draft friendly emails, letters, and replies\n• Suggest recipes, creative ideas, and book recommendations\n• Keep your daily to-do list organized\n• Chat with you anytime via voice or text\n\nHow can I help you today?",
+        "I'm Alie in Cozy mode ☕ — your warm daily companion!\n\nI'm right here to:\n• Plan your days with gentle, balanced pacing\n• Draft friendly emails, letters, and thoughtful replies\n• Suggest cozy 15-minute recipes and creative ideas\n• Keep your daily to-dos organized without pressure\n• Chat with you anytime via voice or text\n\nHow can I make your day a little brighter?",
     };
   }
 
+  // 7. Greetings
   if (/^(hi|hello|hey|greetings|good morning|good evening|good afternoon)\b/.test(p)) {
+    if (persona === "candid") {
+      return {
+        reply: "Hey! Alie here. What's on your radar? Let's get things moving. ⚡",
+      };
+    }
+    if (persona === "zen") {
+      return {
+        reply:
+          "Greetings. I'm here with you. Take a comfortable breath—what shall we reflect on? 🌿",
+      };
+    }
     return {
       reply:
-        "Hello! I'm Alie, ready to help. Would you like to check your to-do items, plan your day, or just chat about an idea?",
+        "Hello! Warm welcome. I'm Alie, ready to help with anything on your mind today. How are you feeling? ☕",
     };
   }
 
+  // 8. Thanks
   if (/(thanks|thank you|awesome|great|cool|nice)/.test(p)) {
+    if (persona === "candid") {
+      return {
+        reply: "Anytime! Let's keep the streak going. ⚡",
+      };
+    }
+    if (persona === "zen") {
+      return {
+        reply: "With gratitude. May your day continue in peaceful balance. 🌿",
+      };
+    }
     return {
-      reply: "You're very welcome! I'm always right here whenever you need anything.",
+      reply: "You're so very welcome! I'm always right here whenever you need me. ☕",
     };
   }
 
+  // Fallback
+  if (persona === "candid") {
+    return {
+      reply:
+        "Got it. Let's make it actionable: I can prioritize your to-dos, draft a punchy note, or break down whatever's on your plate. Where do you want to start? ⚡",
+    };
+  }
+  if (persona === "zen") {
+    return {
+      reply:
+        "I am holding space for whatever is present for you. We can organize your intentions gently, reflect together, or simply take this one step at a time. 🌿",
+    };
+  }
   return {
     reply:
-      "I'm right here with you! I can help you organize to-dos, draft messages, plan meals, or answer questions — whichever is most helpful right now.",
+      "I'm right here with you! I can help you organize to-dos, draft messages, plan a cozy meal, or talk through whatever is on your mind. ☕",
   };
 }
 
@@ -171,6 +355,15 @@ export class AlieClient {
   private statsTimer: ReturnType<typeof setInterval> | null = null;
   private state: ConnectionState = "disconnected";
   private startedAt = Date.now() - 1000 * 60 * 60 * 24 * 9;
+  private persona: PersonaMode = "cozy";
+
+  setPersona(mode: PersonaMode) {
+    this.persona = mode;
+  }
+
+  getPersona(): PersonaMode {
+    return this.persona;
+  }
 
   private saveTasks() {
     saveStoredTasks(this.tasks);
@@ -345,9 +538,9 @@ export class AlieClient {
 
   private async run(prompt: string, transcriptId?: string) {
     const messageId = "a-" + uid();
-    const script = scriptFor(prompt, this.tasks);
+    const script = scriptFor(prompt, this.tasks, this.persona);
 
-    this.emit({ type: "agent_thinking", messageId });
+    this.emit({ type: "agent_thinking", messageId, persona: this.persona });
     await sleep(650);
 
     if (script.tool) {
