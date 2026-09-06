@@ -15,20 +15,20 @@ interface PriorityOption {
 
 const DEFAULT_PRIORITY: PriorityOption = {
   value: "normal",
-  label: "Normal",
-  badgeClass: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20",
+  label: "Gentle step",
+  badgeClass: "bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/20",
 };
 
 const PRIORITY_MAP: Record<TaskPriority, PriorityOption> = {
   normal: DEFAULT_PRIORITY,
   high: {
     value: "high",
-    label: "Urgent",
-    badgeClass: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
+    label: "Main focus",
+    badgeClass: "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20",
   },
   low: {
     value: "low",
-    label: "Low",
+    label: "When ready",
     badgeClass: "bg-muted text-muted-foreground border-border",
   },
 };
@@ -74,7 +74,7 @@ export function TaskList() {
 
   return (
     <Panel
-      title="To-Do List"
+      title="Gentle Daily Flow"
       meta={
         <div className="flex items-center gap-1.5">
           {doneCount > 0 && (
@@ -83,18 +83,18 @@ export function TaskList() {
               onClick={() => {
                 tasks.filter((t) => t.status === "done").forEach((t) => deleteTask(t.id));
               }}
-              className="rounded px-1.5 py-0.5 text-[0.68rem] text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+              className="rounded-lg px-2 py-0.5 text-[0.68rem] text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
               title="Clear completed tasks"
             >
               Clear completed
             </button>
           )}
-          <span className="rounded bg-muted/80 px-2 py-0.5 text-[0.7rem] font-medium text-foreground">
+          <span className="rounded-full bg-amber-500/15 border border-amber-500/25 px-2.5 py-0.5 text-[0.7rem] font-medium text-amber-800 dark:text-amber-200">
             {tasks.length === 0
-              ? "0 to-dos"
+              ? "0 intentions"
               : openCount === 0
-                ? "All done! 🎉"
-                : `${openCount} to do`}
+                ? "All clear! Enjoy tea ☕"
+                : `${openCount} gentle steps`}
           </span>
         </div>
       }
@@ -102,7 +102,7 @@ export function TaskList() {
     >
       {/* Add Task Input Form */}
       <form
-        className="flex items-center gap-2 border-b border-border/70 bg-card/40 p-2.5 sm:p-3"
+        className="flex items-center gap-2 border-b border-border/70 bg-card/50 p-2.5 sm:p-3"
         onSubmit={(e) => {
           e.preventDefault();
           if (!title.trim()) return;
@@ -113,15 +113,15 @@ export function TaskList() {
         <input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder="Add a task (e.g., Call doctor, Review notes)..."
+          placeholder="Add a gentle intention (e.g., Water the plants, Call mom)..."
           disabled={offline}
-          className="min-w-0 flex-1 rounded-md border border-border/80 bg-background px-2.5 py-2 sm:py-1.5 text-base sm:text-xs text-foreground placeholder:text-muted-foreground/60 outline-none transition-all focus:border-signal/50 focus:ring-1 focus:ring-signal/20 disabled:opacity-50"
+          className="min-w-0 flex-1 rounded-xl border border-border/80 bg-background px-3 py-2 sm:py-1.5 text-base sm:text-xs text-foreground placeholder:text-muted-foreground/60 outline-none transition-all focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/20 disabled:opacity-50"
         />
 
         <select
           value={priority}
           onChange={(e) => setPriority(e.target.value as TaskPriority)}
-          className="rounded-md border border-border/80 bg-background px-2.5 py-2 sm:py-1.5 text-base sm:text-xs font-medium text-foreground outline-none transition-colors hover:bg-muted/40 focus:border-signal"
+          className="rounded-xl border border-border/80 bg-background px-2.5 py-2 sm:py-1.5 text-base sm:text-xs font-medium text-foreground outline-none transition-colors hover:bg-muted/40 focus:border-amber-500/50"
         >
           {PRIORITY_OPTIONS.map((p) => (
             <option key={p.value} value={p.value}>
@@ -133,7 +133,7 @@ export function TaskList() {
         <button
           type="submit"
           disabled={offline || !title.trim()}
-          className="flex items-center gap-1 rounded-md bg-foreground px-3.5 py-2 sm:px-3 sm:py-1.5 text-xs font-medium text-background shadow-xs transition-opacity hover:opacity-90 disabled:opacity-40 active:scale-95"
+          className="flex items-center gap-1 rounded-xl bg-amber-600 dark:bg-amber-500 px-3.5 py-2 sm:px-3 sm:py-1.5 text-xs font-medium text-white shadow-xs transition-opacity hover:opacity-90 disabled:opacity-40 active:scale-95"
         >
           <Plus className="size-3.5" />
           <span className="hidden sm:inline">Add</span>
@@ -142,19 +142,9 @@ export function TaskList() {
 
       {/* Persona Celebration Quip Banner on Task Completion */}
       {celebration && (
-        <div
-          className={cn(
-            "flex items-center justify-between gap-2 border-b px-3.5 py-2 text-xs transition-all duration-300 animate-in fade-in slide-in-from-top-1",
-            persona === "cozy" &&
-              "border-amber-500/30 bg-amber-500/10 text-amber-900 dark:text-amber-200",
-            persona === "candid" &&
-              "border-violet-500/30 bg-violet-500/10 text-violet-900 dark:text-violet-200",
-            persona === "zen" &&
-              "border-emerald-500/30 bg-emerald-500/10 text-emerald-900 dark:text-emerald-200",
-          )}
-        >
+        <div className="flex items-center justify-between gap-2 border-b border-amber-500/30 bg-amber-500/10 dark:bg-amber-500/15 px-3.5 py-2 text-xs text-amber-900 dark:text-amber-100 transition-all duration-300 animate-in fade-in slide-in-from-top-1">
           <div className="flex items-center gap-2 min-w-0">
-            <Sparkles className="size-3.5 shrink-0 animate-spin [animation-duration:3s]" />
+            <Sparkles className="size-3.5 shrink-0 text-amber-500 animate-spin [animation-duration:3s]" />
             <span className="font-medium text-[0.72rem] truncate">{celebration.text}</span>
           </div>
           <button
@@ -172,11 +162,14 @@ export function TaskList() {
       {/* Task List Items */}
       <ul className="divide-y divide-border/50">
         {tasks.length === 0 && (
-          <li className="flex flex-col items-center justify-center py-8 text-center text-muted-foreground">
-            <ListTodo className="size-8 stroke-[1.5] text-muted-foreground/40 mb-1.5" />
-            <p className="text-xs font-medium text-foreground">Your to-do list is empty</p>
-            <p className="mt-0.5 text-[0.68rem] text-muted-foreground">
-              Type a task above or ask Alie to remember something for you!
+          <li className="flex flex-col items-center justify-center py-10 px-4 text-center text-muted-foreground">
+            <span className="text-3xl mb-2">☕</span>
+            <p className="font-serif text-sm font-semibold text-foreground">
+              Your day is calm & clear
+            </p>
+            <p className="mt-1 max-w-xs text-xs text-muted-foreground leading-relaxed">
+              Nothing pressing on your plate. Enjoy the quiet moment or jot down a gentle intention
+              above.
             </p>
           </li>
         )}

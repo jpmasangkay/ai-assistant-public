@@ -220,16 +220,18 @@ function Turn({
       {message.content ? (
         <MessageContent
           className={cn(
-            "rounded-md px-3.5 py-2.5 text-sm leading-relaxed shadow-xs",
+            "rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-xs transition-all",
             isUser
-              ? "bg-primary text-primary-foreground ml-auto max-w-[85%]"
-              : "border border-border/70 bg-card text-card-foreground mr-auto max-w-[95%]",
+              ? "bg-amber-600 dark:bg-amber-500 text-white ml-auto max-w-[85%] font-medium"
+              : "border border-amber-500/20 bg-card/95 text-card-foreground mr-auto max-w-[95%] shadow-xs",
           )}
         >
           {isUser ? (
             <p className="whitespace-pre-wrap">{message.content}</p>
           ) : (
-            <MessageResponse className="font-sans">{message.content}</MessageResponse>
+            <MessageResponse className="font-sans leading-relaxed">
+              {message.content}
+            </MessageResponse>
           )}
         </MessageContent>
       ) : null}
@@ -377,86 +379,57 @@ export function ConversationPanel() {
       <Conversation className="min-h-0 flex-1">
         <ConversationContent className="gap-4 p-4 sm:p-5">
           {messages.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-8 sm:py-12 text-center max-w-lg mx-auto px-2">
-              {/* Living Alie Avatar */}
+            <div className="relative flex flex-col items-center justify-center py-10 sm:py-16 text-center max-w-xl mx-auto px-4">
+              {/* Subtle warm ambient hearth glow halo */}
+              <div className="absolute -top-10 size-80 rounded-full bg-amber-500/10 dark:bg-amber-400/10 blur-3xl pointer-events-none -z-10 animate-hearth-glow" />
+
+              {/* Living Alie Avatar with warm presence */}
               <div className="mb-4">
-                <AlieAvatar
-                  size="xl"
-                  persona={persona}
-                  status={agentStatus}
-                  showEmojiBadge={true}
-                />
+                <AlieAvatar size="xl" persona="cozy" status={agentStatus} showEmojiBadge={true} />
               </div>
 
-              {/* Active Persona Badge Pill */}
-              <div
-                className={cn(
-                  "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium shadow-2xs mb-3 transition-colors",
-                  personaConfig.accentBg,
-                  personaConfig.accentBorder,
-                  personaConfig.accentText,
-                )}
-              >
-                <span>{personaConfig.emoji}</span>
-                <span className="font-semibold">{personaConfig.name}</span>
-                <span className="opacity-60 hidden sm:inline">· {personaConfig.tagline}</span>
+              {/* Friendly Sanctuary Tag */}
+              <div className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 dark:bg-amber-500/15 px-3.5 py-1 text-xs font-medium text-amber-800 dark:text-amber-200 shadow-2xs mb-3 backdrop-blur-sm">
+                <span>☕</span>
+                <span className="font-serif">Cozy Sanctuary</span>
+                <span className="opacity-60 hidden sm:inline">· Warm, patient & private</span>
               </div>
 
-              {/* Time-of-day Contextual Greeting */}
-              <p className="text-xs font-medium text-muted-foreground mb-1 italic">
+              {/* Time-of-day Contextual Greeting in serif */}
+              <p className="font-serif text-sm text-amber-800/80 dark:text-amber-300/80 mb-2 italic">
                 "{timeGreeting}"
               </p>
 
-              {/* Persona Headline & Subtitle */}
-              <h3 className="text-base sm:text-lg font-bold tracking-tight text-foreground max-w-md">
-                {personaConfig.emptyStateHeadline}
-              </h3>
-              <p className="mt-1.5 max-w-sm text-xs leading-relaxed text-muted-foreground">
-                {personaConfig.emptyStateSubtitle}
+              {/* Warm Editorial Headline */}
+              <h2 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-foreground max-w-lg leading-snug">
+                Make yourself at home. How can I support your day?
+              </h2>
+              <p className="mt-2.5 max-w-md text-xs sm:text-sm leading-relaxed text-muted-foreground">
+                Grab a warm cup of coffee or tea. I’m right here to listen, shape a gentle plan, or
+                just keep you company.
               </p>
 
-              {/* Quick Persona Vibe Selector */}
-              <div className="mt-4 flex items-center justify-center gap-1.5">
-                <span className="text-[0.68rem] text-muted-foreground mr-0.5">Switch vibe:</span>
-                {(["cozy", "candid", "zen"] as PersonaMode[]).map((mode) => {
-                  const p = getPersonaConfig(mode);
-                  const active = persona === mode;
-                  return (
-                    <button
-                      key={mode}
-                      type="button"
-                      onClick={() => setPersona(mode)}
-                      className={cn(
-                        "flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium transition-all active:scale-95",
-                        active
-                          ? cn(
-                              "border shadow-2xs font-semibold",
-                              p.accentBg,
-                              p.accentBorder,
-                              p.accentText,
-                            )
-                          : "border border-border/60 text-muted-foreground hover:bg-muted/80 hover:text-foreground",
-                      )}
-                    >
-                      <span>{p.emoji}</span>
-                      <span className="text-[0.68rem]">{p.shortName}</span>
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Persona-Curated Prompt Starters */}
-              <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-2 w-full max-w-md">
+              {/* Thoughtful Conversation Starters (Styled like tactile stationery cards) */}
+              <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-lg text-left">
                 {personaConfig.promptSuggestions.map((s, i) => (
                   <button
                     key={i}
                     type="button"
                     disabled={offline}
                     onClick={() => sendText(s.prompt)}
-                    className="flex items-center gap-2.5 rounded-lg border border-border/80 bg-card/80 p-2.5 text-left text-xs font-medium text-foreground transition-all hover:bg-muted/80 hover:border-border hover:shadow-2xs active:scale-98 disabled:opacity-50"
+                    className="group relative flex items-start gap-3 rounded-2xl border border-amber-500/20 bg-card/90 p-3.5 shadow-2xs transition-all duration-200 hover:border-amber-500/40 hover:bg-card hover:shadow-xs active:scale-98 disabled:opacity-50"
                   >
-                    <span className="text-base shrink-0">{s.emoji}</span>
-                    <span className="truncate leading-snug">{s.label}</span>
+                    <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 text-base group-hover:scale-110 transition-transform">
+                      {s.emoji}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium text-xs text-foreground group-hover:text-amber-800 dark:group-hover:text-amber-200 transition-colors">
+                        {s.label}
+                      </p>
+                      <p className="mt-0.5 text-[0.72rem] text-muted-foreground line-clamp-2 leading-relaxed">
+                        {s.prompt}
+                      </p>
+                    </div>
                   </button>
                 ))}
               </div>
@@ -505,9 +478,9 @@ export function ConversationPanel() {
       </Conversation>
 
       {/* Input Section */}
-      <div className="shrink-0 border-t border-border/80 bg-card/30 p-3 sm:p-4">
+      <div className="shrink-0 border-t border-border/70 bg-card/40 p-3 sm:p-4 backdrop-blur-sm">
         <PromptInput
-          className="rounded-md border border-border/80 bg-card shadow-xs transition-all focus-within:border-signal/50 focus-within:ring-1 focus-within:ring-signal/20"
+          className="rounded-2xl border border-amber-500/30 bg-card shadow-xs transition-all focus-within:border-amber-500/60 focus-within:ring-2 focus-within:ring-amber-500/15"
           onSubmit={(_, event) => {
             event.preventDefault();
             if (!draft.trim()) return;
@@ -522,28 +495,28 @@ export function ConversationPanel() {
               offline
                 ? "Connecting to Alie..."
                 : recording
-                  ? "Listening... speak freely"
-                  : "Type a message or tap Voice to speak..."
+                  ? "Listening warmly... speak freely"
+                  : "Share what's on your mind, ask for a gentle plan, or tap Voice... ☕"
             }
             disabled={offline}
-            className="text-base sm:text-sm font-sans placeholder:text-muted-foreground/50"
+            className="text-base sm:text-sm font-sans placeholder:text-muted-foreground/60"
           />
 
           {/* Live Voice Recording Waveform Bar (active while recording) */}
           {recording && (
-            <div className="flex items-center gap-2 border-t border-border/40 bg-signal/5 px-3 py-1.5 text-xs text-signal">
-              <span className="size-2 rounded-full bg-signal animate-pulse" />
-              <span className="text-[0.68rem] font-medium text-signal">Listening...</span>
-              <div className="h-1 flex-1 overflow-hidden rounded bg-muted">
+            <div className="flex items-center gap-2 border-t border-amber-500/20 bg-amber-500/10 px-3.5 py-2 text-xs text-amber-900 dark:text-amber-100">
+              <span className="size-2 rounded-full bg-amber-500 animate-pulse" />
+              <span className="text-[0.68rem] font-medium font-serif">Listening to you...</span>
+              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted">
                 <div
-                  className="h-full rounded bg-signal transition-[width] duration-75"
+                  className="h-full rounded-full bg-amber-500 transition-[width] duration-75"
                   style={{ width: `${Math.min(100, Math.max(12, Math.round(micLevel * 160)))}%` }}
                 />
               </div>
               <button
                 type="button"
                 onClick={stopTalking}
-                className="rounded bg-signal px-2 py-0.5 text-[0.68rem] font-medium text-signal-foreground hover:opacity-90 active:scale-95"
+                className="rounded-lg bg-amber-600 dark:bg-amber-500 px-2.5 py-0.5 text-[0.68rem] font-medium text-white hover:opacity-90 active:scale-95"
               >
                 Send voice
               </button>
@@ -567,10 +540,10 @@ export function ConversationPanel() {
                 disabled={offline}
                 onClick={toggleTalking}
                 className={cn(
-                  "flex items-center gap-1.5 rounded-md px-3 py-1.5 sm:px-2.5 sm:py-1 text-xs font-medium transition-all active:scale-95",
+                  "flex items-center gap-1.5 rounded-xl px-3 py-1.5 sm:px-2.5 sm:py-1 text-xs font-medium transition-all active:scale-95",
                   recording
-                    ? "bg-signal text-signal-foreground animate-pulse shadow-xs"
-                    : "border border-border/70 text-muted-foreground hover:bg-muted hover:text-foreground",
+                    ? "bg-amber-600 text-white animate-pulse shadow-xs"
+                    : "border border-amber-500/30 text-amber-900 dark:text-amber-100 hover:bg-amber-500/10",
                   offline && "cursor-not-allowed opacity-50",
                 )}
                 title={recording ? "Stop and send voice recording" : "Voice input (Speak to Alie)"}

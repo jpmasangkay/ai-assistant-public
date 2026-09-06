@@ -4,7 +4,6 @@ import { Clock, Loader2, Plus, Radio, Volume2 } from "lucide-react";
 
 import { AlieAvatar } from "@/components/alie/AlieAvatar";
 import { ChatHistoryDialog } from "@/components/alie/ChatHistoryDialog";
-import { PersonaSwitcher } from "@/components/alie/PersonaSwitcher";
 import { ThemeToggle } from "@/components/alie/ThemeToggle";
 import { useAlie } from "@/lib/alie/store";
 import { cn } from "@/lib/utils";
@@ -75,20 +74,29 @@ export function HeaderBar() {
             className="flex items-center gap-2.5 transition-opacity hover:opacity-85"
             title="Back to home"
           >
-            <AlieAvatar size="sm" persona={persona} status={agentStatus} showEmojiBadge={true} />
-            <div>
-              <span className="font-display text-sm font-semibold tracking-tight text-foreground">
+            <AlieAvatar size="sm" persona="cozy" status={agentStatus} showEmojiBadge={true} />
+            <div className="flex flex-col">
+              <span className="font-serif text-base font-bold tracking-tight text-foreground leading-none">
                 Alie
+              </span>
+              <span className="text-[0.65rem] text-muted-foreground font-medium">
+                Personal Companion
               </span>
             </div>
           </Link>
 
-          {/* Center: Persona Switcher & Status Indicator */}
+          {/* Center: Cozy Companion Identity & Status Indicator */}
           <div className="order-3 flex items-center justify-center gap-2 sm:order-2">
-            <PersonaSwitcher />
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 dark:bg-amber-500/15 px-3 py-1 text-xs font-medium text-amber-800 dark:text-amber-200 shadow-2xs backdrop-blur-md">
+              <span className="text-xs">☕</span>
+              <span className="font-serif font-medium tracking-tight">Cozy Companion</span>
+              <span className="text-amber-600/70 dark:text-amber-300/70 text-[10px] hidden sm:inline">
+                · Warm & Thoughtful
+              </span>
+            </div>
             <div
               className={cn(
-                "hidden sm:inline-flex items-center gap-1.5 rounded-md border px-2 py-0.5 text-[0.7rem] font-medium transition-colors",
+                "hidden sm:inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[0.7rem] font-medium transition-colors",
                 status.badgeClass,
               )}
             >
